@@ -1,7 +1,7 @@
 [project]
 name = "stock-quality-scorer"
 version = "0.1.0"
-description = "A stock quality scorer that levelerages machine learning to do the scoring."
+description = "A stock quality scorer that leverages machine learning to do the scoring."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = []
