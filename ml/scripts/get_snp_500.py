@@ -24,7 +24,7 @@ def main():
     )
     response.raise_for_status()
 
-    soup = BeautifulSoup(response.text, "html.parser")
+    soup = BeautifulSoup(response.text, "lxml")
     table = soup.find("table", id="constituents")
 
     if table is None:
