@@ -23,3 +23,14 @@ dev = [
     "ty>=0.0.34",
     "typos>=1.46.0",
 ]
+
+
+[tool.typos.files]
+extend-exclude = [
+    "ml/data",
+    "uv.lock",
+]
+
+[tool.typos.default.extend-words]
+# crate = "crate" # supressing false positive
+# teh = "the" # force correction
