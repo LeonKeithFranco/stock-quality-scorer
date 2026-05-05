@@ -1,17 +1,16 @@
 import csv
-from datetime import datetime
 from pathlib import Path
 
 import httpx
 from bs4 import BeautifulSoup
 
-_CSV_BASE_NAME = "snp_500_constituents_"
+from scripts._utils import FILE_BASE_NAME, get_today_date_as_str
 
 
 def main():
-    today_date_str = datetime.now().date().strftime("%y%m%d")
-    full_file_name = f"{_CSV_BASE_NAME}{today_date_str}.csv"
-    file_path = Path(__file__).parent.parent / "data" / full_file_name
+    today_date_str = get_today_date_as_str()
+    full_file_name = f"{FILE_BASE_NAME}{today_date_str}.csv"
+    file_path = Path(__file__).parent.parent / "data" / "csvs" / full_file_name
 
     if file_path.exists():
         return
