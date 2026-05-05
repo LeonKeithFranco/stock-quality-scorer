@@ -22,6 +22,7 @@ def main():
             "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:150.0) Gecko/20100101 Firefox/150.0",
         },
     )
+    response.raise_for_status()
 
     soup = BeautifulSoup(response.text, "html.parser")
     table = soup.find("table", id="constituents")
