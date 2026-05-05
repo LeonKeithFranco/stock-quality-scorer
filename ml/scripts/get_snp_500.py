@@ -37,9 +37,6 @@ def main():
         header_cells = [cell.get_text(strip=True) for cell in rows[0].find_all("th")]
         writer.writerow(header_cells)
 
-    with open(file_path, "a", newline="") as f:
-        writer = csv.writer(f)
-
         for row in rows[1:]:
             data_cells = [cell.get_text(strip=True) for cell in row.find_all("td")]
             writer.writerow(data_cells)
