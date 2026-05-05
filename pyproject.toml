@@ -1,0 +1,22 @@
+[project]
+name = "stock-quality-scorer"
+version = "0.1.0"
+description = "A stock quality scorer that levelerages machine learning to do the scoring."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+[tool.uv.workspace]
+members = [
+    "backend",
+    "frontend",
+    "ml",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.3",
+    "ruff>=0.15.12",
+    "ty>=0.0.34",
+    "typos>=1.46.0",
+]
