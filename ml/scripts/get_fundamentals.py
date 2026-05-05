@@ -69,6 +69,11 @@ def main():
                 wait_time *= 1.5
 
         if not info_retrieved:
+            print(
+                f"Could not not get info for '{ticker}'. "
+                "Consider trying again after a few minutes or "
+                "raising the number of attempts."
+            )
             continue
 
         stock_info = {"symbol": ticker} | {
