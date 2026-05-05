@@ -12,3 +12,4 @@ wheels/
 .zed
 .vscode
 *.zip
+*.db
