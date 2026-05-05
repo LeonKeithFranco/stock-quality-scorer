@@ -13,6 +13,9 @@ members = [
     "ml",
 ]
 
+[tool.ty.environment]
+root = ["./ml", "./backend", "./frontend"]
+
 [dependency-groups]
 dev = [
     "pytest>=9.0.3",
