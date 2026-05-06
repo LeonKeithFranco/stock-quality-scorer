@@ -1,4 +1,3 @@
-import csv
 import time
 
 import pandas as pd
@@ -6,7 +5,6 @@ import yfinance as yf
 from yfinance.exceptions import YFRateLimitError
 
 from scripts._utils import (
-    CSV_FOLDER_PATH,
     FILE_BASE_NAME,
     PARQUET_FOLDER_PATH,
     get_tickers,
