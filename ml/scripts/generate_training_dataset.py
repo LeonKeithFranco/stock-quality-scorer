@@ -1,16 +1,21 @@
+import math
+
 import pandas as pd
 
 from scripts._utils import PARQUET_FOLDER_PATH, get_fundamentals, get_prices
 
 
 def _get_annual_rate_of_return(df_prices: pd.DataFrame) -> float:
-    df_most_recent = df_prices.iloc[-1]
-    current_price = df_most_recent["close"]
+    try:
+        df_most_recent = df_prices.iloc[-1]
+        current_price = df_most_recent["close"]
 
-    year_ago_date = df_most_recent["date"] - pd.DateOffset(years=1)
-    year_ago_price = df_prices[df_prices["date"] <= year_ago_date]["close"].iloc[-1]
+        year_ago_date = df_most_recent["date"] - pd.DateOffset(years=1)
+        year_ago_price = df_prices[df_prices["date"] <= year_ago_date]["close"].iloc[-1]
 
-    return current_price / year_ago_price - 1.0
+        return current_price / year_ago_price - 1.0
+    except IndexError:
+        return -math.inf
 
 
 def main():
