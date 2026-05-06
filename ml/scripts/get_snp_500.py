@@ -1,16 +1,15 @@
 import csv
-from pathlib import Path
 
 import httpx
 from bs4 import BeautifulSoup
 
-from scripts._utils import FILE_BASE_NAME, get_today_date_as_str
+from scripts._utils import CSV_FOLDER_PATH, FILE_BASE_NAME, get_today_date_as_str
 
 
 def main():
     today_date_str = get_today_date_as_str()
     full_file_name = f"{FILE_BASE_NAME}{today_date_str}.csv"
-    file_path = Path(__file__).parent.parent / "data" / "csvs" / full_file_name
+    file_path = CSV_FOLDER_PATH / full_file_name
 
     if file_path.exists():
         return
