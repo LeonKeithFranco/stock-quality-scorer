@@ -35,6 +35,16 @@ def main():
         print(f"Download failed: {exc}")
         return
 
+    df_price_info = df_price_info.xs("Close", axis=1, level=1)
+    df_price_info.columns.name = "ticker"
+    df_price_info = cast(
+        pd.DataFrame,
+        df_price_info.stack(future_stack=True)
+        .rename("close")
+        .reset_index()
+        .rename(columns={"Date": "date"}),
+    )
+
     df_price_info.to_parquet(file_path)
 
 
