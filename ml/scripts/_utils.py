@@ -37,3 +37,37 @@ def get_tickers() -> list[str]:
             tickers.append(row["Symbol"])
 
     return tickers
+
+
+def get_prices() -> Path:
+    snp_500_constituents_prices_files = list(
+        PARQUET_FOLDER_PATH.glob("*prices*.parquet")
+    )
+
+    if not snp_500_constituents_prices_files:
+        raise FileNotFoundError(
+            "There are no snp_500_constituents_prices_*.parquet. Please run get_price_history.py script first."
+        )
+
+    return (
+        snp_500_constituents_prices_files[0]
+        if len(snp_500_constituents_prices_files) == 1
+        else sorted(snp_500_constituents_prices_files)[-1]
+    )
+
+
+def get_fundamentals() -> Path:
+    snp_500_constituents_fundamentals_files = list(
+        PARQUET_FOLDER_PATH.glob("*fundamentals*.parquet")
+    )
+
+    if not snp_500_constituents_fundamentals_files:
+        raise FileNotFoundError(
+            "There are no snp_500_constituents_fundamentals_*.parquet. Please run get_fundamentals.py script first."
+        )
+
+    return (
+        snp_500_constituents_fundamentals_files[0]
+        if len(snp_500_constituents_fundamentals_files) == 1
+        else sorted(snp_500_constituents_fundamentals_files)[-1]
+    )
