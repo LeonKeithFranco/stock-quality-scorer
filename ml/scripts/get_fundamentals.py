@@ -6,11 +6,13 @@ import pandas as pd
 import yfinance as yf
 from yfinance.exceptions import YFRateLimitError
 
-from scripts._utils import FILE_BASE_NAME, get_today_date_as_str
+from scripts._utils import (
+    CSV_FOLDER_PATH,
+    FILE_BASE_NAME,
+    PARQUET_FOLDER_PATH,
+    get_today_date_as_str,
+)
 
-_DATA_FOLDER_PATH = Path(__file__).parent.parent / "data"
-_CSV_FOLDER_PATH = _DATA_FOLDER_PATH / "csvs"
-_PARQUET_FOLDER_PATH = _DATA_FOLDER_PATH / "parquets"
 _MAX_ATTEMPTS = 6
 _TARGET_KEYS = [
     "trailingPE",
@@ -27,12 +29,12 @@ _TARGET_KEYS = [
 def main():
     today_date_str = get_today_date_as_str()
     full_file_name = f"{FILE_BASE_NAME}{today_date_str}.parquet"
-    file_path = _PARQUET_FOLDER_PATH / full_file_name
+    file_path = PARQUET_FOLDER_PATH / full_file_name
 
     if file_path.exists():
         return
 
-    snp_500_constituents_files = list(_CSV_FOLDER_PATH.glob("*.csv"))
+    snp_500_constituents_files = list(CSV_FOLDER_PATH.glob("*.csv"))
 
     if not snp_500_constituents_files:
         raise FileNotFoundError(
