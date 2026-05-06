@@ -27,7 +27,7 @@ _TARGET_KEYS = [
 
 def main():
     today_date_str = get_today_date_as_str()
-    full_file_name = f"{FILE_BASE_NAME}{today_date_str}.parquet"
+    full_file_name = f"{FILE_BASE_NAME}fundamentals_{today_date_str}.parquet"
     file_path = PARQUET_FOLDER_PATH / full_file_name
 
     if file_path.exists():
