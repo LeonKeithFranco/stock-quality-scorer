@@ -21,15 +21,19 @@ def main():
 
     tickers = get_tickers()
 
-    df_price_info = cast(
-        pd.DataFrame,
-        yf.download(
-            tickers=tickers,
-            period="5y",
-            group_by="ticker",
-            actions=False,
-        ),
-    )
+    try:
+        df_price_info = cast(
+            pd.DataFrame,
+            yf.download(
+                tickers=["^GSPC"] + tickers,
+                period="5y",
+                group_by="ticker",
+                actions=False,
+            ),
+        )
+    except Exception as exc:
+        print(f"Download failed: {exc}")
+        return
 
     df_price_info.to_parquet(file_path)
 
