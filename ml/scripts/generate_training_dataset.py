@@ -45,6 +45,7 @@ def main():
 
     df_training_dataset = df_fundamentals.copy()
     df_training_dataset["beatSnp500"] = df_fundamentals["ticker"].map(beat_snp_500)
+    df_training_dataset = df_training_dataset.dropna(subset=["beatSnp500"])
 
     df_training_dataset.to_parquet(PARQUET_FOLDER_PATH / "training_dataset.parquet")
 
