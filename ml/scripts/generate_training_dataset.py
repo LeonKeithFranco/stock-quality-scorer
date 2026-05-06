@@ -30,7 +30,6 @@ def main():
 
     beat_snp_500 = {}
     for ticker in tickers:
-        # data = {'ticker': ticker}
         df_ticker_prices = df_prices[df_prices["ticker"] == ticker]
         current_ticker_rate_of_return = _get_annual_rate_of_return(df_ticker_prices)
 
