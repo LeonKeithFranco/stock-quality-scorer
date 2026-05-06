@@ -1,11 +1,11 @@
-import math
+from typing import cast
 
 import pandas as pd
 
 from scripts._utils import PARQUET_FOLDER_PATH, get_fundamentals, get_prices
 
 
-def _get_annual_rate_of_return(df_prices: pd.DataFrame) -> float:
+def _get_annual_rate_of_return(df_prices: pd.DataFrame) -> float | None:
     try:
         df_most_recent = df_prices.iloc[-1]
         current_price = df_most_recent["close"]
@@ -15,14 +15,14 @@ def _get_annual_rate_of_return(df_prices: pd.DataFrame) -> float:
 
         return current_price / year_ago_price - 1.0
     except IndexError:
-        return -math.inf
+        return None
 
 
 def main():
     df_prices = pd.read_parquet(get_prices()).sort_values("date")
 
     df_snp_500_prices = df_prices[df_prices["ticker"] == "^GSPC"]
-    snp_500_rate_of_return = _get_annual_rate_of_return(df_snp_500_prices)
+    snp_500_rate_of_return = cast(float, _get_annual_rate_of_return(df_snp_500_prices))
 
     df_fundamentals = pd.read_parquet(get_fundamentals())
 
@@ -34,7 +34,13 @@ def main():
         current_ticker_rate_of_return = _get_annual_rate_of_return(df_ticker_prices)
 
         beat_snp_500.update(
-            {ticker: 1 if current_ticker_rate_of_return > snp_500_rate_of_return else 0}
+            {ticker: float("nan")}
+            if current_ticker_rate_of_return is None
+            else {
+                ticker: 1
+                if current_ticker_rate_of_return > snp_500_rate_of_return
+                else 0
+            }
         )
 
     df_training_dataset = df_fundamentals.copy()
