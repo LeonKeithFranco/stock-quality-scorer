@@ -58,7 +58,7 @@ def main():
             )
             continue
 
-        stock_info = {"symbol": ticker} | {
+        stock_info = {"ticker": ticker} | {
             k: yf_stock_info.get(k, None) for k in _TARGET_KEYS
         }
         snp_500_constituents_info.append(stock_info)
