@@ -15,18 +15,24 @@ def get_today_date_as_str() -> str:
     return datetime.now().date().strftime(_DATE_FORMAT)
 
 
+def _get_most_recent_file(
+    file_name_glob_pattern: str,
+    folder: Path,
+    err_msg: str = "There are no files in the directory.",
+) -> Path:
+    files = list(folder.glob(file_name_glob_pattern))
+
+    if not files:
+        raise FileNotFoundError(err_msg)
+
+    return files[0] if len(files) == 1 else sorted(files)[-1]
+
+
 def get_tickers() -> list[str]:
-    snp_500_constituents_files = list(CSV_FOLDER_PATH.glob("*.csv"))
-
-    if not snp_500_constituents_files:
-        raise FileNotFoundError(
-            "There are no snp_500_constituents_*.csv files. Please run get_snp_500.py script first."
-        )
-
-    most_recent_file = (
-        snp_500_constituents_files[0]
-        if len(snp_500_constituents_files) == 1
-        else sorted(snp_500_constituents_files)[-1]
+    most_recent_file = _get_most_recent_file(
+        "*.csv",
+        CSV_FOLDER_PATH,
+        err_msg="There are no snp_500_constituents_*.csv files. Please run get_snp_500.py script first.",
     )
 
     tickers: list[str] = []
@@ -40,34 +46,16 @@ def get_tickers() -> list[str]:
 
 
 def get_prices() -> Path:
-    snp_500_constituents_prices_files = list(
-        PARQUET_FOLDER_PATH.glob("*prices*.parquet")
-    )
-
-    if not snp_500_constituents_prices_files:
-        raise FileNotFoundError(
-            "There are no snp_500_constituents_prices_*.parquet. Please run get_price_history.py script first."
-        )
-
-    return (
-        snp_500_constituents_prices_files[0]
-        if len(snp_500_constituents_prices_files) == 1
-        else sorted(snp_500_constituents_prices_files)[-1]
+    return _get_most_recent_file(
+        "*prices*.parquet",
+        PARQUET_FOLDER_PATH,
+        err_msg="There are no snp_500_constituents_prices_*.parquet. Please run get_price_history.py script first.",
     )
 
 
 def get_fundamentals() -> Path:
-    snp_500_constituents_fundamentals_files = list(
-        PARQUET_FOLDER_PATH.glob("*fundamentals*.parquet")
-    )
-
-    if not snp_500_constituents_fundamentals_files:
-        raise FileNotFoundError(
-            "There are no snp_500_constituents_fundamentals_*.parquet. Please run get_fundamentals.py script first."
-        )
-
-    return (
-        snp_500_constituents_fundamentals_files[0]
-        if len(snp_500_constituents_fundamentals_files) == 1
-        else sorted(snp_500_constituents_fundamentals_files)[-1]
+    return _get_most_recent_file(
+        "*fundamentals*.parquet",
+        PARQUET_FOLDER_PATH,
+        err_msg="There are no snp_500_constituents_fundamentals_*.parquet. Please run get_fundamentals.py script first.",
     )
