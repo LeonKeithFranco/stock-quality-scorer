@@ -1,3 +1,4 @@
+import csv
 from datetime import datetime
 from pathlib import Path
 
@@ -12,3 +13,27 @@ PARQUET_FOLDER_PATH = DATA_FOLDER_PATH / "parquets"
 
 def get_today_date_as_str() -> str:
     return datetime.now().date().strftime(_DATE_FORMAT)
+
+
+def get_tickers() -> list[str]:
+    snp_500_constituents_files = list(CSV_FOLDER_PATH.glob("*.csv"))
+
+    if not snp_500_constituents_files:
+        raise FileNotFoundError(
+            "There are no snp_500_constituents_*.csv files. Please run get_snp_500.py script first."
+        )
+
+    most_recent_file = (
+        snp_500_constituents_files[0]
+        if len(snp_500_constituents_files) == 1
+        else sorted(snp_500_constituents_files)[-1]
+    )
+
+    tickers: list[str] = []
+
+    with open(most_recent_file, "r") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            tickers.append(row["Symbol"])
+
+    return tickers

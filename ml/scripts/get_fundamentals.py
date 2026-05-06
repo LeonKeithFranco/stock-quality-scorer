@@ -9,6 +9,7 @@ from scripts._utils import (
     CSV_FOLDER_PATH,
     FILE_BASE_NAME,
     PARQUET_FOLDER_PATH,
+    get_tickers,
     get_today_date_as_str,
 )
 
@@ -33,25 +34,7 @@ def main():
     if file_path.exists():
         return
 
-    snp_500_constituents_files = list(CSV_FOLDER_PATH.glob("*.csv"))
-
-    if not snp_500_constituents_files:
-        raise FileNotFoundError(
-            "There are no snp_500_constituents_*.csv files. Please run get_snp_500.py script first."
-        )
-
-    most_recent_file = (
-        snp_500_constituents_files[0]
-        if len(snp_500_constituents_files) == 1
-        else sorted(snp_500_constituents_files)[-1]
-    )
-
-    tickers: list[str] = []
-
-    with open(most_recent_file, "r") as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            tickers.append(row["Symbol"])
+    tickers = get_tickers()
 
     snp_500_constituents_info = []
 
