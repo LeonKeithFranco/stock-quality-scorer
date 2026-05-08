@@ -120,7 +120,7 @@ class TestTrainingDataset:
 
         assert trainig_tickers.issubset(fundamental_tickers)
 
-    def teat_beat_snp_500_col(self, training_data: pd.DataFrame) -> None:
+    def test_beat_snp_500_col(self, training_data: pd.DataFrame) -> None:
         col = training_data["beatSnp500"]
 
         col_values = set(col)
