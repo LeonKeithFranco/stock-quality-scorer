@@ -59,3 +59,14 @@ def get_fundamentals_path() -> Path:
         PARQUET_FOLDER_PATH,
         err_msg="There are no snp_500_constituents_fundamentals_*.parquet. Please run get_fundamentals.py script first.",
     )
+
+
+def get_training_data_path() -> Path:
+    training_data_path = PARQUET_FOLDER_PATH / "training_dataset.parquet"
+
+    if not training_data_path.exists():
+        raise FileNotFoundError(
+            "There is no training data parquest. Please run generate_training_dataset.py script first."
+        )
+
+    return training_data_path
