@@ -1,7 +1,10 @@
+from pprint import pp
+
 import pandas as pd
 import pytest
+from dateutil.relativedelta import relativedelta
 from pandas.core.dtypes.api import is_float_dtype
-from scripts._utils import get_fundamentals_path, get_tickers
+from scripts._utils import get_fundamentals_path, get_prices_path, get_tickers
 
 
 @pytest.fixture(scope="session")
@@ -12,6 +15,11 @@ def tickers() -> list[str]:
 @pytest.fixture(scope="session")
 def fundamentals() -> pd.DataFrame:
     return pd.read_parquet(get_fundamentals_path())
+
+
+@pytest.fixture(scope="session")
+def prices() -> pd.DataFrame:
+    return pd.read_parquet(get_prices_path())
 
 
 class TestSNP500CSV:
@@ -45,3 +53,33 @@ class TestSNP500FundamentalsParquet:
 
         for col in expected_numerical_columns:
             assert is_float_dtype(fundamentals[col])
+
+
+class TestSNP500PricesParquest:
+    def test_expected_tickers(self, prices: pd.DataFrame, tickers: list[str]) -> None:
+        assert set(prices["ticker"]) == set(tickers + ["^GSPC"])
+
+    def test_expected_column_names(self, prices: pd.DataFrame) -> None:
+        expected_column_names = {
+            "date",
+            "ticker",
+            "close",
+        }
+
+        assert set(prices.columns) == expected_column_names
+
+    def test_date_range(self, prices: pd.DataFrame) -> None:
+        expected_year_diff = 5
+
+        min_date = prices["date"].min()
+        max_date = prices["date"].max()
+        date_diff = relativedelta(max_date, min_date)
+
+        assert date_diff.years == expected_year_diff
+
+    def test_no_duplicate_date_ticker_entries(self, prices: pd.DataFrame) -> None:
+        dates = prices["date"]
+        tickers = prices["ticker"]
+        date_ticker_entries = set(zip(dates, tickers))
+
+        assert len(date_ticker_entries) == len(prices)
