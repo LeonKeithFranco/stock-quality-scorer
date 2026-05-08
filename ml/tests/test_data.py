@@ -1,5 +1,6 @@
 import pandas as pd
 import pytest
+from pandas.core.dtypes.api import is_float_dtype
 from scripts._utils import get_fundamentals_path, get_tickers
 
 
@@ -22,5 +23,25 @@ class TestSNP500CSV:
         assert len(tickers) >= min_amount
 
 
-# class TestSNP500FundamentalsParquest:
-#     def test_c
+class TestSNP500FundamentalsParquest:
+    def test_structure_of_fundamentals_data(
+        self, fundamentals: pd.DataFrame, tickers: list[str]
+    ) -> None:
+        expected_column_names = {
+            "ticker",
+            "trailingPE",
+            "priceToBook",
+            "returnOnEquity",
+            "debtToEquity",
+            "revenueGrowth",
+            "grossMargins",
+            "operatingMargins",
+            "profitMargins",
+        }
+        expected_numerical_columns = expected_column_names - {"ticker"}
+
+        assert set(fundamentals.columns) == expected_column_names
+        assert set(fundamentals["ticker"]) == set(tickers)
+
+        for col in expected_numerical_columns:
+            assert is_float_dtype(fundamentals[col])
