@@ -1,5 +1,3 @@
-from pprint import pp
-
 import pandas as pd
 import pytest
 from dateutil.relativedelta import relativedelta
