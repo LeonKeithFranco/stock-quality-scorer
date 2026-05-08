@@ -23,7 +23,7 @@ class TestSNP500CSV:
         assert len(tickers) >= min_amount
 
 
-class TestSNP500FundamentalsParquest:
+class TestSNP500FundamentalsParquet:
     def test_structure_of_fundamentals_data(
         self, fundamentals: pd.DataFrame, tickers: list[str]
     ) -> None:
