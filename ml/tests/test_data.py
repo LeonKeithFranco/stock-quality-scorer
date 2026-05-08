@@ -1,11 +1,8 @@
-from pprint import pp
-
 import pandas as pd
 import pytest
 from dateutil.relativedelta import relativedelta
 from pandas.core.dtypes.api import is_float_dtype, is_integer_dtype
 from scripts.utils import (
-    PARQUET_FOLDER_PATH,
     get_fundamentals_path,
     get_prices_path,
     get_tickers,
