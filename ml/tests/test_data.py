@@ -33,7 +33,7 @@ def training_data() -> pd.DataFrame:
 class TestSNP500CSV:
     def test_correct_amount_of_tickers(self, tickers: list[str]) -> None:
         # companies can have multiple classes of stocks, hence why it's possible to have
-        # more tha 500 in the S&P 500
+        # more than 500 in the S&P 500
         min_amount = 500
 
         assert len(tickers) >= min_amount
@@ -115,10 +115,10 @@ class TestTrainingDataset:
     def test_training_data_tickers_is_subset_of_fundamentals(
         self, training_data: pd.DataFrame, fundamentals: pd.DataFrame
     ) -> None:
-        trainig_tickers = set(training_data["ticker"])
+        training_tickers = set(training_data["ticker"])
         fundamental_tickers = set(fundamentals["ticker"])
 
-        assert trainig_tickers.issubset(fundamental_tickers)
+        assert training_tickers.issubset(fundamental_tickers)
 
     def test_beat_snp_500_col(self, training_data: pd.DataFrame) -> None:
         col = training_data["beatSnp500"]
