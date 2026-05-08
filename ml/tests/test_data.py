@@ -43,9 +43,12 @@ class TestSNP500CSV:
 
 
 class TestSNP500FundamentalsParquet:
-    def test_structure_of_fundamentals_data(
+    def test_expected_tickers(
         self, fundamentals: pd.DataFrame, tickers: list[str]
     ) -> None:
+        assert set(fundamentals["ticker"]) == set(tickers)
+
+    def test_expected_column_names(self, fundamentals: pd.DataFrame) -> None:
         expected_column_names = {
             "ticker",
             "trailingPE",
@@ -57,10 +60,20 @@ class TestSNP500FundamentalsParquet:
             "operatingMargins",
             "profitMargins",
         }
-        expected_numerical_columns = expected_column_names - {"ticker"}
 
         assert set(fundamentals.columns) == expected_column_names
-        assert set(fundamentals["ticker"]) == set(tickers)
+
+    def test_expected_column_types(self, fundamentals: pd.DataFrame) -> None:
+        expected_numerical_columns = {
+            "trailingPE",
+            "priceToBook",
+            "returnOnEquity",
+            "debtToEquity",
+            "revenueGrowth",
+            "grossMargins",
+            "operatingMargins",
+            "profitMargins",
+        }
 
         for col in expected_numerical_columns:
             assert is_float_dtype(fundamentals[col])
