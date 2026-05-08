@@ -1,3 +1,5 @@
+from pprint import pp
+
 import pandas as pd
 import pytest
 from dateutil.relativedelta import relativedelta
@@ -128,3 +130,13 @@ class TestTrainingDataset:
 
         assert is_integer_dtype(col)
         assert col_values.issubset(expected_col_values)
+
+    def test_cols_for_nan(self, training_data: pd.DataFrame) -> None:
+        nans = training_data.isna().sum()
+
+        assert nans["ticker"] == 0
+        assert nans["beatSnp500"] == 0
+
+        nans = nans.drop(["ticker", "beatSnp500"])
+
+        assert (nans >= 0).all()
