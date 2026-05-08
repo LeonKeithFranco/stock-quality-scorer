@@ -2,7 +2,7 @@ from typing import cast
 
 import pandas as pd
 
-from scripts._utils import PARQUET_FOLDER_PATH, get_fundamentals_path, get_prices_path
+from scripts.utils import PARQUET_FOLDER_PATH, get_fundamentals_path, get_prices_path
 
 
 def _get_annual_rate_of_return(df_prices: pd.DataFrame) -> float | None:

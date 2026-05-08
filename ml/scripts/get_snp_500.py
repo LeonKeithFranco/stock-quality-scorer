@@ -3,7 +3,7 @@ import csv
 import httpx
 from bs4 import BeautifulSoup
 
-from scripts._utils import CSV_FOLDER_PATH, FILE_BASE_NAME, get_today_date_as_str
+from scripts.utils import CSV_FOLDER_PATH, FILE_BASE_NAME, get_today_date_as_str
 
 
 def main():

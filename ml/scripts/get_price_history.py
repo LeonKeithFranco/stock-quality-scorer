@@ -3,7 +3,7 @@ from typing import cast
 import pandas as pd
 import yfinance as yf
 
-from scripts._utils import (
+from scripts.utils import (
     FILE_BASE_NAME,
     PARQUET_FOLDER_PATH,
     get_tickers,
