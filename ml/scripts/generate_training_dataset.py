@@ -2,7 +2,7 @@ from typing import cast
 
 import pandas as pd
 
-from scripts._utils import PARQUET_FOLDER_PATH, get_fundamentals, get_prices
+from scripts._utils import PARQUET_FOLDER_PATH, get_fundamentals_path, get_prices_path
 
 
 def _get_annual_rate_of_return(df_prices: pd.DataFrame) -> float | None:
@@ -19,12 +19,12 @@ def _get_annual_rate_of_return(df_prices: pd.DataFrame) -> float | None:
 
 
 def main():
-    df_prices = pd.read_parquet(get_prices()).sort_values("date")
+    df_prices = pd.read_parquet(get_prices_path()).sort_values("date")
 
     df_snp_500_prices = df_prices[df_prices["ticker"] == "^GSPC"]
     snp_500_rate_of_return = cast(float, _get_annual_rate_of_return(df_snp_500_prices))
 
-    df_fundamentals = pd.read_parquet(get_fundamentals())
+    df_fundamentals = pd.read_parquet(get_fundamentals_path())
 
     tickers = df_fundamentals["ticker"]
 

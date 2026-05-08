@@ -45,7 +45,7 @@ def get_tickers() -> list[str]:
     return tickers
 
 
-def get_prices() -> Path:
+def get_prices_path() -> Path:
     return _get_most_recent_file(
         "*prices*.parquet",
         PARQUET_FOLDER_PATH,
@@ -53,7 +53,7 @@ def get_prices() -> Path:
     )
 
 
-def get_fundamentals() -> Path:
+def get_fundamentals_path() -> Path:
     return _get_most_recent_file(
         "*fundamentals*.parquet",
         PARQUET_FOLDER_PATH,
