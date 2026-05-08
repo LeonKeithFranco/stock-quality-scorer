@@ -25,6 +25,9 @@ def main():
     snp_500_rate_of_return = cast(float, _get_annual_rate_of_return(df_snp_500_prices))
 
     df_fundamentals = pd.read_parquet(get_fundamentals_path())
+    # check for nearly empty row; only one column at this current point
+    # that is never nan, 'ticker'
+    df_fundamentals = df_fundamentals[df_fundamentals.notna().sum(axis=1) > 1]
 
     tickers = df_fundamentals["ticker"]
 

@@ -140,3 +140,9 @@ class TestTrainingDataset:
         nans = nans.drop(["ticker", "beatSnp500"])
 
         assert (nans >= 0).all()
+
+    def test_no_featureless_rows(self, training_data: pd.DataFrame) -> None:
+        # only 2 non-nan columns should be exist, 'ticker' and 'beatSnp500'
+        mask = training_data.notna().sum(axis=1) == 2
+
+        assert len(training_data[mask]) == 0
