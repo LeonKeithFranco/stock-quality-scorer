@@ -3,8 +3,14 @@ from pprint import pp
 import pandas as pd
 import pytest
 from dateutil.relativedelta import relativedelta
-from pandas.core.dtypes.api import is_float_dtype
-from scripts._utils import get_fundamentals_path, get_prices_path, get_tickers
+from pandas.core.dtypes.api import is_float_dtype, is_integer_dtype
+from scripts.utils import (
+    PARQUET_FOLDER_PATH,
+    get_fundamentals_path,
+    get_prices_path,
+    get_tickers,
+    get_training_data_path,
+)
 
 
 @pytest.fixture(scope="session")
@@ -20,6 +26,11 @@ def fundamentals() -> pd.DataFrame:
 @pytest.fixture(scope="session")
 def prices() -> pd.DataFrame:
     return pd.read_parquet(get_prices_path())
+
+
+@pytest.fixture(scope="session")
+def training_data() -> pd.DataFrame:
+    return pd.read_parquet(get_training_data_path())
 
 
 class TestSNP500CSV:
@@ -83,3 +94,27 @@ class TestSNP500PricesParquest:
         date_ticker_entries = set(zip(dates, tickers))
 
         assert len(date_ticker_entries) == len(prices)
+
+
+class TestTrainingDataset:
+    def test_at_most_same_length_as_fundamental(
+        self, training_data: pd.DataFrame, fundamentals: pd.DataFrame
+    ) -> None:
+        assert len(training_data) <= len(fundamentals)
+
+    def test_training_data_tickers_is_subset_of_fundamentals(
+        self, training_data: pd.DataFrame, fundamentals: pd.DataFrame
+    ) -> None:
+        trainig_tickers = set(training_data["ticker"])
+        fundamental_tickers = set(fundamentals["ticker"])
+
+        assert trainig_tickers.issubset(fundamental_tickers)
+
+    def teat_beat_snp_500_col(self, training_data: pd.DataFrame) -> None:
+        col = training_data["beatSnp500"]
+
+        col_values = set(col)
+        expected_col_values = {0, 1}
+
+        assert is_integer_dtype(col)
+        assert col_values == expected_col_values
