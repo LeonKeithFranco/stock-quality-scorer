@@ -132,12 +132,9 @@ class TestTrainingDataset:
     def test_cols_for_nan(self, training_data: pd.DataFrame) -> None:
         nans = training_data.isna().sum()
 
+        # only these columns never have any nan values
         assert nans["ticker"] == 0
         assert nans["beatSnp500"] == 0
-
-        nans = nans.drop(["ticker", "beatSnp500"])
-
-        assert (nans >= 0).all()
 
     def test_no_featureless_rows(self, training_data: pd.DataFrame) -> None:
         # only 2 non-nan columns should be exist, 'ticker' and 'beatSnp500'
