@@ -66,7 +66,7 @@ def get_training_data_path() -> Path:
 
     if not training_data_path.exists():
         raise FileNotFoundError(
-            "There is no training data parquest. Please run generate_training_dataset.py script first."
+            "There is no training data parquet. Please run generate_training_dataset.py script first."
         )
 
     return training_data_path

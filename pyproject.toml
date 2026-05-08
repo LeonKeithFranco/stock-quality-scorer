@@ -34,3 +34,4 @@ extend-exclude = [
 [tool.typos.default.extend-words]
 # crate = "crate" # supressing false positive
 # teh = "the" # force correction
+parquest = "parquet"

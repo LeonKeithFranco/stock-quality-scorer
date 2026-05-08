@@ -76,7 +76,7 @@ class TestSNP500FundamentalsParquet:
             assert is_float_dtype(fundamentals[col])
 
 
-class TestSNP500PricesParquest:
+class TestSNP500PricesParquet:
     def test_expected_tickers(self, prices: pd.DataFrame, tickers: list[str]) -> None:
         assert set(prices["ticker"]) == set(tickers + ["^GSPC"])
 
