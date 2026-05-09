@@ -1,5 +1,6 @@
 from pprint import pp
 
+import numpy as np
 import pandas as pd
 from sklearn.base import ClassifierMixin
 from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
@@ -14,7 +15,7 @@ from scripts.utils import get_training_data_path
 
 def _cross_val_score_runner(
     model: ClassifierMixin, features: pd.DataFrame, labels: pd.Series
-):
+) -> np.ndarray:
     imputer = SimpleImputer(strategy="median")
     scaler = StandardScaler()
 
