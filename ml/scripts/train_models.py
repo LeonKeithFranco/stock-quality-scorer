@@ -1,7 +1,6 @@
 from pprint import pp
 
 import pandas as pd
-from anyio.functools import lru_cache
 from sklearn.base import ClassifierMixin
 from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
 from sklearn.impute import SimpleImputer
@@ -13,33 +12,34 @@ from sklearn.preprocessing import StandardScaler
 from scripts.utils import get_training_data_path
 
 
-@lru_cache
-def _get_features_and_labels() -> tuple[pd.DataFrame, pd.DataFrame]:
-    df = pd.read_parquet(get_training_data_path())
-
-    X = df.drop(columns=["ticker", "beatSnp500"])
-    y = df["beatSnp500"]
-
-    return X, y
-
-
 def _cross_val_score_runner(
-    model: ClassifierMixin, skf: StratifiedKFold = StratifiedKFold(n_splits=5)
+    model: ClassifierMixin, features: pd.DataFrame, labels: pd.Series
 ):
-    X, y = _get_features_and_labels()
-
     imputer = SimpleImputer(strategy="median")
     scaler = StandardScaler()
 
     pipeline = Pipeline([("imputer", imputer), ("scaler", scaler), ("model", model)])
 
-    return cross_val_score(pipeline, X, y, cv=skf, scoring="roc_auc")
+    skf: StratifiedKFold = StratifiedKFold(n_splits=5)
+
+    return cross_val_score(pipeline, features, labels, cv=skf, scoring="roc_auc")
 
 
 def main():
-    lr_scores = _cross_val_score_runner(model=LogisticRegression())
-    rf_scores = _cross_val_score_runner(model=RandomForestClassifier())
-    gb_scores = _cross_val_score_runner(model=GradientBoostingClassifier())
+    df = pd.read_parquet(get_training_data_path())
+
+    X = df.drop(columns=["ticker", "beatSnp500"])
+    y = df["beatSnp500"]
+
+    lr_scores = _cross_val_score_runner(
+        model=LogisticRegression(), features=X, labels=y
+    )
+    rf_scores = _cross_val_score_runner(
+        model=RandomForestClassifier(), features=X, labels=y
+    )
+    gb_scores = _cross_val_score_runner(
+        model=GradientBoostingClassifier(), features=X, labels=y
+    )
 
     scores_dict = {
         "Logistic": lr_scores,
