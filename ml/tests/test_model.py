@@ -39,7 +39,7 @@ class TestModel:
         preds = model.predict_proba(features.iloc[[0]]).squeeze()
 
         assert len(preds) == 2
-        assert sum(preds) == 1.0
+        assert sum(preds) == pytest.approx(1.0)
         assert np.all((preds >= 0.0) & (preds <= 1.0))
 
     def test_feature_with_nan(
