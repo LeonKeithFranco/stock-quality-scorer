@@ -34,7 +34,7 @@ def _print_results(results: tuple[np.ndarray, np.ndarray], title: str) -> None:
         .round(4)
         .T
     )
-    df_results.columns = [f"Fold {i + 1}" for i in range(df_results.shape[1])]
+    df_results.columns = [f"Bin {i + 1}" for i in range(df_results.shape[1])]
 
     print(f"===== {title} =====")
     pp(df_results)
