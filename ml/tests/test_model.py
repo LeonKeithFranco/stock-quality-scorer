@@ -49,7 +49,7 @@ class TestModel:
         feature_with_nan.iat[0, 0] = float("nan")
 
         with does_not_raise():
-            model.predict_proba(features.iloc[[0]])
+            model.predict_proba(feature_with_nan.iloc[[0]])
 
     def test_bad_input_shape_raises(
         self, model: CalibratedClassifierCV, features: pd.DataFrame
