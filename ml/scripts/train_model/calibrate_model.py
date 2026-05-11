@@ -1,3 +1,4 @@
+from pathlib import Path
 from pprint import pp
 
 import joblib
@@ -63,7 +64,14 @@ def main():
     print("\n")
     _print_results(calibration_curve(y, calibrated_probs[:, 1]), "Calibrated Results")
 
-    joblib.dump(calibrated_pipeline, MODELS_FOLDER_PATH / "rf_calibrated.joblib")
+    full_file_path = (
+        Path(__file__).parent.parent.parent.parent
+        / "backend"
+        / "data"
+        / "rf_calibrated.joblib"
+    )
+
+    joblib.dump(calibrated_pipeline, full_file_path)
 
 
 if __name__ == "__main__":
