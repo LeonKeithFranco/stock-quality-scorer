@@ -416,7 +416,9 @@ source = { virtual = "ml" }
 dependencies = [
     { name = "beautifulsoup4" },
     { name = "httpx" },
+    { name = "joblib" },
     { name = "lxml" },
+    { name = "numpy" },
     { name = "pandas" },
     { name = "pyarrow" },
     { name = "scikit-learn" },
@@ -427,7 +429,9 @@ dependencies = [
 requires-dist = [
     { name = "beautifulsoup4", specifier = ">=4.14.3" },
     { name = "httpx", specifier = ">=0.28.1" },
+    { name = "joblib", specifier = ">=1.5.3" },
     { name = "lxml", specifier = ">=6.1.0" },
+    { name = "numpy", specifier = ">=2.4.4" },
     { name = "pandas", specifier = ">=3.0.2" },
     { name = "pyarrow", specifier = ">=24.0.0" },
     { name = "scikit-learn", specifier = ">=1.8.0" },
