@@ -1,5 +1,6 @@
 from pprint import pp
 
+import joblib
 import numpy as np
 import pandas as pd
 from sklearn.calibration import CalibratedClassifierCV, calibration_curve
@@ -8,7 +9,7 @@ from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
-from scripts.utils import get_training_data_path
+from scripts.utils import MODELS_FOLDER_PATH, get_training_data_path
 
 
 def _build_pipeline() -> Pipeline:
@@ -61,6 +62,8 @@ def main():
     _print_results(calibration_curve(y, raw_probs[:, 1]), "Raw Results")
     print("\n")
     _print_results(calibration_curve(y, calibrated_probs[:, 1]), "Calibrated Results")
+
+    joblib.dump(calibrated_pipeline, MODELS_FOLDER_PATH / "rf_calibrated.joblib")
 
 
 if __name__ == "__main__":
