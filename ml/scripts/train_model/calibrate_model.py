@@ -23,12 +23,12 @@ def _build_pipeline() -> Pipeline:
     )
 
 
-def _print_results(reults: tuple[np.ndarray, np.ndarray], title: str) -> None:
+def _print_results(results: tuple[np.ndarray, np.ndarray], title: str) -> None:
     df_results = (
         pd.DataFrame(
             {
-                "Avg Predicted Probability": reults[1],
-                "Actual Outperformance Rate": reults[0],
+                "Avg Predicted Probability": results[1],
+                "Actual Outperformance Rate": results[0],
             }
         )
         .round(4)
