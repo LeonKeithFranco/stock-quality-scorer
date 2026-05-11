@@ -27,11 +27,6 @@ def features(data: pd.DataFrame) -> pd.DataFrame:
     return data.drop(columns=["ticker", "beatSnp500"])
 
 
-# @pytest.fixture(scope="session")
-# def labels(data: pd.DataFrame) -> pd.Series:
-#     return data["beatSnp500"]
-
-
 class TestModel:
     def test_prediction(
         self, model: CalibratedClassifierCV, features: pd.DataFrame
