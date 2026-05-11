@@ -1,8 +1,8 @@
 import asyncio
 
-from scripts.get_fundamentals import main as get_fundamentals
-from scripts.get_price_history import main as get_price_history
-from scripts.get_snp_500 import main as get_snp_500
+from scripts.get_data.get_fundamentals import main as get_fundamentals
+from scripts.get_data.get_price_history import main as get_price_history
+from scripts.get_data.get_snp_500 import main as get_snp_500
 
 
 async def _price_and_fundamentals_async_runner():
