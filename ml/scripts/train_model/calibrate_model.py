@@ -10,7 +10,7 @@ from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
-from scripts.utils import MODELS_FOLDER_PATH, get_training_data_path
+from scripts.utils import get_training_data_path
 
 
 def _build_pipeline() -> Pipeline:
