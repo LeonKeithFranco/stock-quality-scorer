@@ -4,9 +4,7 @@ from pathlib import Path
 import joblib
 from sklearn.calibration import CalibratedClassifierCV
 
-_MODEL_FILE_PATH = (
-    Path(__file__).parent.parent.parent.parent / "data" / "rf_calibrated.joblib"
-)
+_MODEL_FILE_PATH = Path(__file__).parent.parent.parent / "data" / "rf_calibrated.joblib"
 
 
 @lru_cache
