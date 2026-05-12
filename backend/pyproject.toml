@@ -6,4 +6,5 @@ dependencies = [
     "fastapi[standard]>=0.136.1",
     "joblib>=1.5.3",
     "scikit-learn>=1.8.0",
+    "yfinance>=1.3.0",
 ]
