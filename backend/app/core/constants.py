@@ -1,5 +1,4 @@
 TARGET_INFO_KEYS = [
-    "ticker",
     "trailingPE",
     "priceToBook",
     "returnOnEquity",
