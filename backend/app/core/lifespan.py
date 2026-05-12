@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from app.src.core.model import get_model
+from app.core.model import get_model
 
 
 @asynccontextmanager
