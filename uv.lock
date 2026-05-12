@@ -61,6 +61,8 @@ dependencies = [
     { name = "cachetools-async" },
     { name = "fastapi", extra = ["standard"] },
     { name = "joblib" },
+    { name = "numpy" },
+    { name = "pandas" },
     { name = "scikit-learn" },
     { name = "yfinance" },
 ]
@@ -71,6 +73,8 @@ requires-dist = [
     { name = "cachetools-async", specifier = ">=0.0.5" },
     { name = "fastapi", extras = ["standard"], specifier = ">=0.136.1" },
     { name = "joblib", specifier = ">=1.5.3" },
+    { name = "numpy", specifier = ">=2.4.4" },
+    { name = "pandas", specifier = ">=3.0.2" },
     { name = "scikit-learn", specifier = ">=1.8.0" },
     { name = "yfinance", specifier = ">=1.3.0" },
 ]
