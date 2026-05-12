@@ -12,5 +12,5 @@ class PredictionRequest(StockBase):
 
 
 class PredictionResponse(StockBase):
-    outperformance_probability: float = Field(ge=0.0)
+    outperformance_probability: float = Field(ge=0.0, le=1.0)
     predicted_class: Literal[0, 1]
