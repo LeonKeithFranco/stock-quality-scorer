@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field
 
 
 class StockBase(BaseModel):
-    ticker: str = Field(min_length=3, max_length=10)
+    ticker: str = Field(min_length=1, max_length=10)
 
 
 class PredictionRequest(StockBase):
