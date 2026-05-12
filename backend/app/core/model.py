@@ -24,6 +24,6 @@ def get_model() -> CalibratedClassifierCV:
 @cached(cache=LRUCache(maxsize=525), key=_custom_df_hash)
 def predict(fundamentals: pd.DataFrame) -> float:
     prediction = get_model().predict_proba(fundamentals)
-    outperform_probability = prediction[:, 1].squeeze()
+    outperform_probability = prediction[:, 1][0]
 
     return float(outperform_probability)
