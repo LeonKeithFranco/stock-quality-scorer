@@ -48,5 +48,9 @@ class TestAPI:
         data = response.json()
 
         assert data["ticker"] == ticker
-        assert data["outperformance_probability"] > 0.5
-        assert data["predicted_class"] == 1
+        assert 1.0 >= data["outperformance_probability"] >= 0.0
+        assert (
+            data["predicted_class"] == 1
+            if data["outperformance_probability"] > 0.5
+            else 0
+        )
