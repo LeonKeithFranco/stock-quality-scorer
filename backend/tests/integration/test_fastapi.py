@@ -39,7 +39,7 @@ class TestAPI:
             yf, "Ticker", return_value=mock_ticker_instance
         )
 
-        response = client.post("/predict", json={"ticker": "AAPL"})
+        response = client.post("/predict", json={"ticker": ticker})
 
         mock_ticker_class.assert_called_once_with(ticker)
 
