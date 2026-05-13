@@ -102,9 +102,7 @@ class TestAPI:
             )
         }
 
-    def test_predict_invalid_post_body(
-        self, mocker: MockerFixture, client: TestClient
-    ) -> None:
+    def test_predict_invalid_post_body(self, client: TestClient) -> None:
         ticker = ""
 
         response = client.post("/predict", json={"ticker": ticker})
