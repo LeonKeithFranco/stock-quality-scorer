@@ -4,9 +4,7 @@ version = "0.1.0"
 description = "A stock quality scorer that leverages machine learning to do the scoring."
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = [
-    "pytest-mock>=3.15.1",
-]
+dependencies = []
 
 [tool.uv.workspace]
 members = [
@@ -21,6 +19,7 @@ root = ["./ml", "./backend", "./frontend"]
 [dependency-groups]
 dev = [
     "pytest>=9.0.3",
+    "pytest-mock>=3.15.1",
     "ruff>=0.15.12",
     "ty>=0.0.34",
     "typos>=1.46.0",
