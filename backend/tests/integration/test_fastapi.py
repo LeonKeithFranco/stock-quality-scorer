@@ -1,5 +1,6 @@
 import pytest
 from app.core.api import _MAX_ATTEMPTS, get_fundamentals, yf
+from app.domain import service
 from app.main import app
 from fastapi import status
 from fastapi.testclient import TestClient
@@ -120,3 +121,49 @@ class TestAPI:
                 }
             ]
         }
+
+    def test_predict_snp_500(self, mocker: MockerFixture, client: TestClient) -> None:
+        tickers = {"AAPL", "KO", "MFST"}
+
+        mocker.patch.object(service, "_get_snp_500_ticker_list", return_value=tickers)
+
+        mock_info_returns = [
+            {
+                "symbol": ticker,
+                "trailingPE": 36.29515,
+                "priceToBook": 41.244488,
+                "returnOnEquity": 1.4147099,
+                "debtToEquity": 79.548,
+                "revenueGrowth": 0.166,
+                "grossMargins": 0.47862,
+                "operatingMargins": 0.32275,
+                "profitMargins": 0.27152002,
+            }
+            for ticker in tickers
+        ]
+
+        mock_ticker_instances = []
+
+        for mock_info_return in mock_info_returns:
+            mock_ticker_instance = mocker.MagicMock()
+            mock_ticker_instance.info = mock_info_return
+
+            mock_ticker_instances.append(mock_ticker_instance)
+
+        mock_ticker_class = mocker.patch.object(
+            yf, "Ticker", side_effect=mock_ticker_instances
+        )
+
+        response = client.post("/predict/snp-500")
+
+        assert mock_ticker_class.call_count == len(tickers)
+
+        assert response.status_code == status.HTTP_200_OK
+
+        data = response.json()
+        for datum in data:
+            assert datum["ticker"] in tickers
+            assert 1.0 >= datum["outperformance_probability"] >= 0.0
+            assert datum["predicted_class"] == (
+                1 if datum["outperformance_probability"] > 0.5 else 0
+            )
