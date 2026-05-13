@@ -54,10 +54,8 @@ class TestAPI:
 
         assert data["ticker"] == ticker
         assert 1.0 >= data["outperformance_probability"] >= 0.0
-        assert (
-            data["predicted_class"] == 1
-            if data["outperformance_probability"] > 0.5
-            else 0
+        assert data["predicted_class"] == (
+            1 if data["outperformance_probability"] > 0.5 else 0
         )
 
     def test_predict_stock_missing_error(
