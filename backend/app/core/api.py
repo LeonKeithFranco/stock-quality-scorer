@@ -36,6 +36,9 @@ def _get_fundamentals_helper(ticker: str) -> dict:
 
         break
 
+    if stock_info is None:
+        raise DataSourceError(source="yfinance", details="Rate limit retries exceeded.")
+
     if not stock_info or "symbol" not in stock_info:
         raise StockMissingError(ticker=ticker)
 
