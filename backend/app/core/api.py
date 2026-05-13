@@ -24,6 +24,8 @@ def _get_fundamentals_helper(ticker: str) -> dict:
         attempts += 1
         try:
             stock_info = yf.Ticker(ticker).info
+            if "symbol" in stock_info:
+                break
         except YFRateLimitError:
             time.sleep(wait_time)
             wait_time *= 1.5
