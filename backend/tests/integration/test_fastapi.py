@@ -1,9 +1,10 @@
 import pytest
-from app.core.api import get_fundamentals, yf
+from app.core.api import _MAX_ATTEMPTS, get_fundamentals, yf
 from app.main import app
 from fastapi import status
 from fastapi.testclient import TestClient
 from pytest_mock import MockerFixture
+from yfinance.exceptions import YFRateLimitError
 
 
 @pytest.fixture
@@ -74,6 +75,26 @@ class TestAPI:
         response = client.post("/predict", json={"ticker": ticker})
 
         mock_ticker_class.assert_called_once_with(ticker)
+
+        assert response.status_code == status.HTTP_404_NOT_FOUND
+        assert response.json() == {
+            "details": f"Stock with ticker symbol '{ticker}' does not exist."
+        }
+
+    def test_predict_get_fundamentals_retry(
+        self, mocker: MockerFixture, client: TestClient
+    ) -> None:
+        mocker.patch("app.core.api.time")
+
+        ticker = "AAPL"
+
+        mock_ticker_class = mocker.patch.object(
+            yf, "Ticker", side_effect=YFRateLimitError
+        )
+
+        response = client.post("/predict", json={"ticker": ticker})
+
+        assert mock_ticker_class.call_count == _MAX_ATTEMPTS
 
         assert response.status_code == status.HTTP_404_NOT_FOUND
         assert response.json() == {
