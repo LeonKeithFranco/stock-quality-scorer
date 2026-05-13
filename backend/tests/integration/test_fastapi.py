@@ -1,5 +1,5 @@
 import pytest
-from app.core.api import yf
+from app.core.api import get_fundamentals, yf
 from app.main import app
 from fastapi import status
 from fastapi.testclient import TestClient
@@ -19,6 +19,10 @@ def test_api_startup(client: TestClient) -> None:
 
 
 class TestAPI:
+    @pytest.fixture(autouse=True)
+    def clear_fundamentals_cache(self) -> None:
+        get_fundamentals.cache.clear()  # ty: ignore[unresolved-attribute]
+
     def test_predict(self, mocker: MockerFixture, client: TestClient) -> None:
         ticker = "AAPL"
 
@@ -54,3 +58,24 @@ class TestAPI:
             if data["outperformance_probability"] > 0.5
             else 0
         )
+
+    def test_predict_stock_missing_error(
+        self, mocker: MockerFixture, client: TestClient
+    ) -> None:
+        ticker = "AAPL"
+
+        mock_ticker_instance = mocker.MagicMock()
+        mock_ticker_instance.info = {}
+
+        mock_ticker_class = mocker.patch.object(
+            yf, "Ticker", return_value=mock_ticker_instance
+        )
+
+        response = client.post("/predict", json={"ticker": "AAPL"})
+
+        mock_ticker_class.assert_called_once_with(ticker)
+
+        assert response.status_code == status.HTTP_404_NOT_FOUND
+        assert response.json() == {
+            "details": f"Stock with ticker symbol '{ticker}' does not exist."
+        }
