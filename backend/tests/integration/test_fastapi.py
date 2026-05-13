@@ -103,3 +103,25 @@ class TestAPI:
                 "Source 'yfinance' is temporarily unavailable. Please try again later."
             )
         }
+
+    def test_predict_invalid_post_body(
+        self, mocker: MockerFixture, client: TestClient
+    ) -> None:
+        ticker = ""
+
+        response = client.post("/predict", json={"ticker": ticker})
+
+        pp(response.json())
+
+        assert response.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
+        assert response.json() == {
+            "detail": [
+                {
+                    "type": "string_too_short",
+                    "loc": ["body", "ticker"],
+                    "msg": "String should have at least 1 character",
+                    "input": ticker,
+                    "ctx": {"min_length": 1},
+                }
+            ]
+        }
