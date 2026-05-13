@@ -30,8 +30,11 @@ def _get_fundamentals_helper(ticker: str) -> dict:
             time.sleep(wait_time)
             wait_time *= 1.5
             wait_time += random.uniform(0.0, wait_time * 0.1)
+            continue
         except Exception as e:
             raise DataSourceError(source="yfinance", details=str(e))
+
+        break
 
     if not stock_info or "symbol" not in stock_info:
         raise StockMissingError(ticker=ticker)
