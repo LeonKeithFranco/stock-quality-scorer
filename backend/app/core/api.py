@@ -26,7 +26,7 @@ def _get_fundamentals_helper(ticker: str) -> dict:
             stock_info = yf.Ticker(ticker).info
         except YFRateLimitError:
             time.sleep(wait_time)
-            wait_time *= 2
+            wait_time *= 1.5
             wait_time += random.uniform(0.0, wait_time * 0.1)
 
     if not stock_info or "symbol" not in stock_info:
