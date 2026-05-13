@@ -60,7 +60,7 @@ class Service:
             predicted_class=1 if predicted_outperform > 0.5 else 0,
         )
 
-    async def predict_outperfromance_of_snp_500(self) -> list[PredictionResponse]:
+    async def predict_outperformance_of_snp_500(self) -> list[PredictionResponse]:
         tickers = await _get_snp_500_ticker_list()
 
         prediction_resps = [

@@ -15,4 +15,4 @@ async def predict(
 
 @router.post("/score-universe", response_model=list[PredictionResponse])
 async def predict_snp_500(service: ServiceDependency) -> list[PredictionResponse]:
-    return await service.predict_outperfromance_of_snp_500()
+    return await service.predict_outperformance_of_snp_500()

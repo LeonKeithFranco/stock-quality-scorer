@@ -17,6 +17,6 @@ async def lifespan(app: FastAPI):
     # should only be done in productions
     if not get_settings().app_debug:
         # called to preload snp stock predictions into cache
-        await Service().predict_outperfromance_of_snp_500()
+        await Service().predict_outperformance_of_snp_500()
 
     yield
