@@ -57,10 +57,13 @@ name = "backend"
 version = "0.1.0"
 source = { virtual = "backend" }
 dependencies = [
+    { name = "beautifulsoup4" },
     { name = "cachetools" },
     { name = "cachetools-async" },
     { name = "fastapi", extra = ["standard"] },
+    { name = "httpx" },
     { name = "joblib" },
+    { name = "lxml" },
     { name = "numpy" },
     { name = "pandas" },
     { name = "scikit-learn" },
@@ -69,10 +72,13 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
+    { name = "beautifulsoup4", specifier = ">=4.14.3" },
     { name = "cachetools", specifier = ">=7.1.1" },
     { name = "cachetools-async", specifier = ">=0.0.5" },
     { name = "fastapi", extras = ["standard"], specifier = ">=0.136.1" },
+    { name = "httpx", specifier = ">=0.28.1" },
     { name = "joblib", specifier = ">=1.5.3" },
+    { name = "lxml", specifier = ">=6.1.0" },
     { name = "numpy", specifier = ">=2.4.4" },
     { name = "pandas", specifier = ">=3.0.2" },
     { name = "scikit-learn", specifier = ">=1.8.0" },
