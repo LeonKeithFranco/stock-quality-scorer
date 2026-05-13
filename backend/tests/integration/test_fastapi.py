@@ -1,3 +1,5 @@
+from pprint import pp
+
 import pytest
 from app.core.api import _MAX_ATTEMPTS, get_fundamentals, yf
 from app.main import app
@@ -94,7 +96,10 @@ class TestAPI:
 
         assert mock_ticker_class.call_count == _MAX_ATTEMPTS
 
-        assert response.status_code == status.HTTP_404_NOT_FOUND
+        assert response.status_code == status.HTTP_503_SERVICE_UNAVAILABLE
+        pp(response.json())
         assert response.json() == {
-            "details": f"Stock with ticker symbol '{ticker}' does not exist."
+            "details": (
+                "Source 'yfinance' is temporarily unavailable. Please try again later."
+            )
         }
