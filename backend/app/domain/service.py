@@ -63,8 +63,15 @@ class Service:
     async def predict_outperformance_of_snp_500(self) -> list[PredictionResponse]:
         tickers = await _get_snp_500_ticker_list()
 
+        results = await asyncio.gather(
+            *(self.predict_outperformance(ticker) for ticker in tickers),
+            return_exceptions=True,
+        )
+
         prediction_resps = [
-            await self.predict_outperformance(ticker) for ticker in tickers
+            pred_resp
+            for pred_resp in results
+            if not isinstance(pred_resp, BaseException)
         ]
 
         return prediction_resps
