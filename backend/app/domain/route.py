@@ -11,3 +11,8 @@ async def predict(
     pred_req: PredictionRequest, service: ServiceDependency
 ) -> PredictionResponse:
     return await service.predict_outperformance(pred_req.ticker)
+
+
+@router.post("/score-universe", response_model=list[PredictionResponse])
+async def predict_snp_500(service: ServiceDependency) -> list[PredictionResponse]:
+    return await service.predict_outperfromance_of_snp_500()

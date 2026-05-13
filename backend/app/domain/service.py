@@ -1,6 +1,11 @@
+import asyncio
 from typing import Annotated
 
+import httpx
 import pandas as pd
+from bs4 import BeautifulSoup
+from cachetools import TTLCache
+from cachetools_async import cached
 from fastapi import Depends
 
 from app.core.api import get_fundamentals
@@ -15,6 +20,34 @@ def _dict_to_df_with_col_expected_order(dict_fundamentals: dict) -> pd.DataFrame
     return df_fundamentals[TARGET_INFO_KEYS]
 
 
+@cached(cache=TTLCache(maxsize=1, ttl=86_400))
+async def _get_snp_500_ticker_list() -> list[str]:
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies",
+            headers={
+                "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:150.0) Gecko/20100101 Firefox/150.0",
+            },
+        )
+        response.raise_for_status()
+
+    soup = BeautifulSoup(response.text, "lxml")
+    table = soup.find("table", id="constituents")
+
+    if table is None:
+        raise ValueError("Table of S&P 500 constituents not found")
+
+    rows = table.find_all("tr")
+
+    tickers = []
+
+    for row in rows[1:]:
+        ticker = row.find_all("td")[0].get_text(strip=True)
+        tickers.append(ticker)
+
+    return tickers
+
+
 class Service:
     async def predict_outperformance(self, ticker: str) -> PredictionResponse:
         stock_fundamentals = await get_fundamentals(ticker)
@@ -26,6 +59,15 @@ class Service:
             outperformance_probability=predicted_outperform,
             predicted_class=1 if predicted_outperform > 0.5 else 0,
         )
+
+    async def predict_outperfromance_of_snp_500(self) -> list[PredictionResponse]:
+        tickers = await _get_snp_500_ticker_list()
+
+        prediction_resps = [
+            await self.predict_outperformance(ticker) for ticker in tickers
+        ]
+
+        return prediction_resps
 
 
 ServiceDependency = Annotated[Service, Depends(Service)]
