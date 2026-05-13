@@ -39,7 +39,9 @@ async def _get_snp_500_ticker_list() -> list[str]:
     table = soup.find("table", id="constituents")
 
     if table is None:
-        raise DataSourceError(source="wikipedia", details="Consituent table not found.")
+        raise DataSourceError(
+            source="wikipedia", details="Constituent table not found."
+        )
 
     rows = table.find_all("tr")
 
