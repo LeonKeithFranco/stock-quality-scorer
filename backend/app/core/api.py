@@ -8,7 +8,7 @@ from cachetools_async import cached
 from yfinance.exceptions import YFRateLimitError
 
 from app.core.constants import TARGET_INFO_KEYS
-from app.core.exceptions import StockMissingError
+from app.core.exceptions import DataSourceError, StockMissingError
 
 _MAX_NUM_OF_STOCK_INFO = 525
 _TTL_IN_SECONDS = 86_400
@@ -28,6 +28,8 @@ def _get_fundamentals_helper(ticker: str) -> dict:
             time.sleep(wait_time)
             wait_time *= 1.5
             wait_time += random.uniform(0.0, wait_time * 0.1)
+        except Exception as e:
+            raise DataSourceError(source="yfinance", details=str(e))
 
     if not stock_info or "symbol" not in stock_info:
         raise StockMissingError(ticker=ticker)

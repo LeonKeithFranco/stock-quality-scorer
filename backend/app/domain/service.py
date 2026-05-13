@@ -10,6 +10,7 @@ from fastapi import Depends
 
 from app.core.api import get_fundamentals
 from app.core.constants import TARGET_INFO_KEYS
+from app.core.exceptions import DataSourceError
 from app.core.model import predict
 from app.domain.schemas import PredictionResponse
 
@@ -22,14 +23,17 @@ def _dict_to_df_with_col_expected_order(dict_fundamentals: dict) -> pd.DataFrame
 
 @cached(cache=TTLCache(maxsize=1, ttl=86_400))
 async def _get_snp_500_ticker_list() -> list[str]:
-    async with httpx.AsyncClient() as client:
-        response = await client.get(
-            "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies",
-            headers={
-                "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:150.0) Gecko/20100101 Firefox/150.0",
-            },
-        )
-        response.raise_for_status()
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.get(
+                "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies",
+                headers={
+                    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:150.0) Gecko/20100101 Firefox/150.0",
+                },
+            )
+            response.raise_for_status()
+    except Exception as e:
+        raise DataSourceError(source="wikipedia", details=str(e))
 
     soup = BeautifulSoup(response.text, "lxml")
     table = soup.find("table", id="constituents")

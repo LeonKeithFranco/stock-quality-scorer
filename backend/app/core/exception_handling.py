@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 
-from app.core.exceptions import StockMissingError
+from app.core.exceptions import DataSourceError, StockMissingError
 
 
 def attach_exception_handlers(app: FastAPI) -> None:
@@ -13,5 +13,16 @@ def attach_exception_handlers(app: FastAPI) -> None:
             status_code=status.HTTP_404_NOT_FOUND,
             content={
                 "details": f"Stock with ticker symbol '{exc.ticker}' does not exist."
+            },
+        )
+
+    @app.exception_handler(DataSourceError)
+    async def data_source_error_handler(
+        request: Request, exc: DataSourceError
+    ) -> JSONResponse:
+        return JSONResponse(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            content={
+                "details": f"Source '{exc.source}' is temporarily unavailable. Please try again later."
             },
         )
