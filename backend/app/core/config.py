@@ -14,6 +14,7 @@ class _Settings(BaseSettings):
     )
 
     app_name: str = Field(min_length=1, max_length=20)
+    app_debug: bool = True
 
 
 @cached(cache=LRUCache(maxsize=1))
