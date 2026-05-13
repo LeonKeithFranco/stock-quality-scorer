@@ -123,7 +123,7 @@ class TestAPI:
         }
 
     def test_predict_snp_500(self, mocker: MockerFixture, client: TestClient) -> None:
-        tickers = {"AAPL", "KO", "MFST"}
+        tickers = {"AAPL", "KO", "MSFT"}
 
         mocker.patch.object(service, "_get_snp_500_ticker_list", return_value=tickers)
 
