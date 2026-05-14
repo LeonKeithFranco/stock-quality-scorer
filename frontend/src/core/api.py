@@ -6,7 +6,7 @@ import httpx
 from src.core.config import get_settings
 
 
-@dataclass
+@dataclass(frozen=True, slots=True)
 class PredictionResponse:
     ticker: str
     outperformance_probability: float
