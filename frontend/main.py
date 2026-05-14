@@ -6,8 +6,11 @@ from src.core.config import get_settings
 
 st.header(get_settings().app_name)
 
-with st.spinner():
-    snp_500_predictions = api.predict_snp_500()
-
+try:
+    with st.spinner():
+        snp_500_predictions = api.predict_snp_500()
+except Exception as e:
+    st.error(f"Unable to get data: {e}")
+    st.stop()
 
 st.dataframe([asdict(prediction) for prediction in snp_500_predictions])
