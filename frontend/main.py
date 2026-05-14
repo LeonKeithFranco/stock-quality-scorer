@@ -35,4 +35,3 @@ try:
     st.dataframe(df_snp_500_predictions, column_config=column_config, hide_index=True)
 except Exception as e:
     st.error(f"Unable to get data: {e}")
-    st.stop()
