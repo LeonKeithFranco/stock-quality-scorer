@@ -1,5 +1,6 @@
 from dataclasses import asdict
 
+import pandas as pd
 import streamlit as st
 from src.core import api
 from src.core.config import get_settings
@@ -13,4 +14,14 @@ except Exception as e:
     st.error(f"Unable to get data: {e}")
     st.stop()
 
-st.dataframe([asdict(prediction) for prediction in snp_500_predictions])
+df_snp_500_predictions = pd.DataFrame(
+    [asdict(prediction) for prediction in snp_500_predictions]
+)
+df_snp_500_predictions.columns = [
+    "Ticker",
+    "Probability of Outperformance",
+    "Beat S&P 500",
+]
+
+
+st.dataframe(df_snp_500_predictions)
