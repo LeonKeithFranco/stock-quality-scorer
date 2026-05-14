@@ -12,7 +12,7 @@ COPY backend/pyproject.toml backend/pyproject.toml
 COPY frontend/pyproject.toml frontend/pyproject.toml
 COPY ml/pyproject.toml ml/pyproject.toml
 
-RUN uv sync --frozen --no-dev --package backend
+RUN uv sync --frozen --no-dev --package frontend
 
 # === Runtime stage ===
 FROM python:3.12-slim
