@@ -43,6 +43,8 @@ def single_predict():
                     prediction = api.predict(ticker)
 
                 _create_table([prediction])
+            except httpx.HTTPStatusError as e:
+                st.error(f"Unable to get data: {e.response.json()['details']}")
             except Exception as e:
                 st.error(f"Unable to get data: {e}")
         else:
