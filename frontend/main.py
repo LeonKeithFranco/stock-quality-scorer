@@ -26,7 +26,7 @@ df_snp_500_predictions["predicted_class"] = df_snp_500_predictions[
 df_snp_500_predictions.columns = [
     "Ticker",
     "Probability of Outperformance",
-    "Beat S&P 500",
+    "Predicted to Beat S&P 500",
 ]
 
 st.dataframe(df_snp_500_predictions)
