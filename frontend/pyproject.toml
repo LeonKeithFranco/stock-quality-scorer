@@ -2,4 +2,9 @@
 name = "frontend"
 version = "0.1.0"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "httpx>=0.28.1",
+    "plotly>=6.7.0",
+    "pydantic-settings>=2.14.1",
+    "streamlit>=1.57.0",
+]
