@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import Any, Self
 
 import httpx
+import streamlit as st
 
 from src.core.config import get_settings
 
@@ -49,3 +50,15 @@ class APIClient:
         self.close()
 
         return False
+
+
+@st.cache_data
+def predict(ticker: str) -> PredictionResponse:
+    with APIClient() as client:
+        return client.predict(ticker)
+
+
+@st.cache_data
+def predict_snp_500() -> list[PredictionResponse]:
+    with APIClient() as client:
+        return client.predict_snp_500()
