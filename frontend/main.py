@@ -32,4 +32,4 @@ df_snp_500_predictions.columns = [
 column_config = {
     "Probability of Outperformance": st.column_config.NumberColumn(format="%.2f%%")
 }
-st.dataframe(df_snp_500_predictions, column_config=column_config)
+st.dataframe(df_snp_500_predictions, column_config=column_config, hide_index=True)
