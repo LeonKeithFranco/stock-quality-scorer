@@ -13,7 +13,7 @@ class _Settings(BaseSettings):
         extra="ignore",
     )
 
-    app_name: str = Field(min_length=1, max_length=20)
+    app_name: str = Field(min_length=1, max_length=50)
     app_debug: bool = True
 
 
