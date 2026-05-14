@@ -1,6 +1,6 @@
-from functools import lru_cache
 from pathlib import Path
 
+import streamlit as st
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -18,6 +18,6 @@ class _Settings(BaseSettings):
     api_base_url: str = "http://127.0.0.1:8000"
 
 
-@lru_cache
+@st.cache_data
 def get_settings() -> _Settings:
     return _Settings()  # ty: ignore[missing-argument]
