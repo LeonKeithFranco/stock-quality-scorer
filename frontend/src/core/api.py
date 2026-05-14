@@ -36,6 +36,12 @@ class APIClient:
 
         return PredictionResponse.from_dict(response.json())
 
+    def predict_snp_500(self) -> list[PredictionResponse]:
+        response = self.client.post("/predict/snp-500")
+        response.raise_for_status()
+
+        return [PredictionResponse.from_dict(data) for data in response.json()]
+
     def __enter__(self) -> Self:
         return self
 
