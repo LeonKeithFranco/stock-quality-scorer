@@ -32,7 +32,7 @@ class APIClient:
         self.client.close()
 
     def predict(self, ticker: str) -> PredictionResponse:
-        response = self.client.post("/predict", json={"ticker": ticker})
+        response = self.client.post("/predict/", json={"ticker": ticker})
         response.raise_for_status()
 
         return PredictionResponse.from_dict(response.json())
