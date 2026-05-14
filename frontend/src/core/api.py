@@ -52,13 +52,13 @@ class APIClient:
         return False
 
 
-@st.cache_data
+@st.cache_data(ttl=86400)
 def predict(ticker: str) -> PredictionResponse:
     with APIClient() as client:
         return client.predict(ticker)
 
 
-@st.cache_data
+@st.cache_data(ttl=86400)
 def predict_snp_500() -> list[PredictionResponse]:
     with APIClient() as client:
         return client.predict_snp_500()
