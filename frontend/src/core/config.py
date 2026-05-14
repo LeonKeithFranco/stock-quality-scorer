@@ -15,7 +15,9 @@ class _Settings(BaseSettings):
 
     app_name: str = Field(min_length=1, max_length=50)
     app_debug: bool = True
+
     api_base_url: str = "http://127.0.0.1:8000"
+    api_timeout: float = 10.0
 
 
 @st.cache_data
