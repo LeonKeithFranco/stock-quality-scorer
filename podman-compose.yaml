@@ -1,4 +1,22 @@
 services:
   backend:
-
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_NAME=Stock Quality Scorer
+      - APP_DEBIG=false
   frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    ports:
+      - "8501:8501"
+    environment:
+      - APP_NAME=Stock Quality Scorer Dashboard
+      - API_BASE_URL=http://backend:8000
+      - API_TIMEOUT=30.0
+    depends_on:
+      - backend
