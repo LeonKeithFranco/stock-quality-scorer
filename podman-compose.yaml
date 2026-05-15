@@ -17,6 +17,6 @@ services:
     environment:
       - APP_NAME=Stock Quality Scorer Dashboard
       - API_BASE_URL=http://backend:8000
-      - API_TIMEOUT=30.0
+      - API_TIMEOUT=60.0
     depends_on:
       - backend
