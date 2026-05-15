@@ -55,7 +55,7 @@ class APIClient:
 
 @st.cache_data(ttl=86400, show_spinner=False)
 def predict(ticker: str) -> PredictionResponse:
-    with APIClient() as client:
+    with APIClient(timeout=10.0) as client:
         return client.predict(ticker)
 
 
