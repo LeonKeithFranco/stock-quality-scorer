@@ -54,11 +54,11 @@ class APIClient:
 
 @st.cache_data(ttl=86400)
 def predict(ticker: str) -> PredictionResponse:
-    with APIClient() as client:
+    with APIClient(timeout=get_settings().api_timeout) as client:
         return client.predict(ticker)
 
 
 @st.cache_data(ttl=86400)
 def predict_snp_500() -> list[PredictionResponse]:
-    with APIClient() as client:
+    with APIClient(timeout=get_settings().api_timeout) as client:
         return client.predict_snp_500()
