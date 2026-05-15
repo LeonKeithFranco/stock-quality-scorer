@@ -7,7 +7,7 @@ services:
       - "8000:8000"
     environment:
       - APP_NAME=Stock Quality Scorer
-      - APP_DEBIG=false
+      - APP_DEBUG=false
   frontend:
     build:
       context: .
