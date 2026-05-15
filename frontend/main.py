@@ -56,7 +56,7 @@ single_predict()
 st.divider()
 
 try:
-    with st.spinner("Loading..."):
+    with st.spinner("Loading full S&P 500 predictions..."):
         snp_500_predictions = api.predict_snp_500()
 
     _create_table(snp_500_predictions)
