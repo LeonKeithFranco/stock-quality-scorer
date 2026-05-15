@@ -23,9 +23,10 @@ class PredictionResponse:
 
 
 class APIClient:
-    def __init__(self, timeout: float = 10.0) -> None:
+    def __init__(self, timeout: float | None = None) -> None:
         self.client = httpx.Client(
-            base_url=get_settings().api_base_url, timeout=timeout
+            base_url=get_settings().api_base_url,
+            timeout=get_settings().api_timeout if timeout is not None else timeout,
         )
 
     def close(self) -> None:
@@ -54,11 +55,11 @@ class APIClient:
 
 @st.cache_data(ttl=86400, show_spinner=False)
 def predict(ticker: str) -> PredictionResponse:
-    with APIClient(timeout=get_settings().api_timeout) as client:
+    with APIClient() as client:
         return client.predict(ticker)
 
 
 @st.cache_data(ttl=86400, show_spinner=False)
 def predict_snp_500() -> list[PredictionResponse]:
-    with APIClient(timeout=get_settings().api_timeout) as client:
+    with APIClient() as client:
         return client.predict_snp_500()
