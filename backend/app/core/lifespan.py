@@ -4,7 +4,6 @@ from fastapi import FastAPI
 
 from app.core.config import get_settings
 from app.core.model import get_model
-from app.domain.service import Service
 
 
 @asynccontextmanager
@@ -13,10 +12,5 @@ async def lifespan(app: FastAPI):
 
     # called to make sure model gets loaded into memory
     get_model()
-
-    # should only be done in productions
-    if not get_settings().app_debug:
-        # called to preload snp stock predictions into cache
-        await Service().predict_outperformance_of_snp_500()
 
     yield
