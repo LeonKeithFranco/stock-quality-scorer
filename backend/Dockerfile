@@ -5,7 +5,7 @@ FROM python:3.12-slim AS builder
 
 COPY --from=uv /uv /usr/local/bin/uv
 
-WORKDIR /build
+WORKDIR /app
 
 COPY pyproject.toml uv.lock ./
 COPY backend/pyproject.toml backend/pyproject.toml
@@ -19,7 +19,7 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-COPY --from=builder /build/.venv .venv
+COPY --from=builder /app/.venv .venv
 
 COPY backend/ backend/
 
