@@ -5,6 +5,12 @@ from app.core.exceptions import DataSourceError, StockMissingError
 
 
 def attach_exception_handlers(app: FastAPI) -> None:
+    """Register application-wide exception handlers on the FastAPI instance.
+
+    Args:
+        app: The FastAPI application to attach the handlers to.
+    """
+
     @app.exception_handler(StockMissingError)
     async def stock_missing_error_handler(
         request: Request, exc: StockMissingError
