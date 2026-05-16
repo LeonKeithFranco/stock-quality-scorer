@@ -13,6 +13,11 @@ MODELS_FOLDER_PATH = DATA_FOLDER_PATH / "models"
 
 
 def get_today_date_as_str() -> str:
+    """Return today's date as a compact string in YYMMDD format.
+
+    Returns:
+        str: The formatted date string.
+    """
     return datetime.now().date().strftime(_DATE_FORMAT)
 
 
@@ -21,6 +26,23 @@ def _get_most_recent_file(
     folder: Path,
     err_msg: str = "There are no files in the directory.",
 ) -> Path:
+    """Return the most recent file in a folder matching a glob patter.
+
+    Files are sorted lexicographically (chornologically due to having dates in the file
+    names) and the last one (most recent) is returned. If only one file matches, it is
+    returned directly.
+
+    Args:
+        file_name_glob_pattern: The glob pattern to match files against.
+        folder: The directory to search in.
+        err_msg: The error message to raise if no files match.
+
+    Returns:
+        Path: The path to the most recent file.
+
+    Raises:
+        FileNotFoundError: If no files match the flow pattern.
+    """
     files = list(folder.glob(file_name_glob_pattern))
 
     if not files:
@@ -30,6 +52,14 @@ def _get_most_recent_file(
 
 
 def get_tickers() -> list[str]:
+    """Read the S&P 500 ticker symbols from the most recent constituents CSV.
+
+    Returns:
+        list[str]: The ticker symbols parsed from the CSV.
+
+    Raises:
+        FileNotFoundError: If no constituents CSV file exists.
+    """
     most_recent_file = _get_most_recent_file(
         "*.csv",
         CSV_FOLDER_PATH,
@@ -47,6 +77,14 @@ def get_tickers() -> list[str]:
 
 
 def get_prices_path() -> Path:
+    """Return the path to the most recent price hsitory parquet file.
+
+    Returns:
+        Path: The path to the prices parquet.
+
+    Raises:
+        FileNotFoundError: If not prices file exists.
+    """
     return _get_most_recent_file(
         "*prices*.parquet",
         PARQUET_FOLDER_PATH,
@@ -55,6 +93,14 @@ def get_prices_path() -> Path:
 
 
 def get_fundamentals_path() -> Path:
+    """Return to the path to the most recent fundamentals parquet file.
+
+    Returns:
+        Path: The path to the fundamentals parquet.
+
+    Raises:
+        FileNotFoundError: If no fundamentals parquet file exists.
+    """
     return _get_most_recent_file(
         "*fundamentals*.parquet",
         PARQUET_FOLDER_PATH,
@@ -63,6 +109,14 @@ def get_fundamentals_path() -> Path:
 
 
 def get_training_data_path() -> Path:
+    """Return the path to the training dataset parquet file.
+
+    Returns:
+        Path: The path to the training dataset parquet.
+
+    Raises:
+        FileNotFoundError: If the training dataset parquest does not exist.
+    """
     training_data_path = PARQUET_FOLDER_PATH / "training_dataset.parquet"
 
     if not training_data_path.exists():
