@@ -16,6 +16,23 @@ _MAX_ATTEMPTS = 7
 
 
 def _get_fundamentals_helper(ticker: str) -> dict:
+    """Fetch stock fundamental data from yfinance with automatic retry logic.
+
+    Attempts to retrieve the ticker's info dict, retrying with exponential backoff on
+    rate-limit errors up to _MAX_ATTEMPTS times.
+
+    Args:
+        ticker: The stock ticker symbol to look up.
+
+    Returns:
+        dict: The raw info dictionary return by yfinance.
+
+    Raises:
+        DataSourceError: If yfinance raises an unexpected error or all rate-limit retries
+            are exhausted.
+        StockMissingError: If the ticker does not exist in yfinance.
+    """
+
     stock_info = None
     wait_time = 1
     attempts = 0
@@ -47,6 +64,18 @@ def _get_fundamentals_helper(ticker: str) -> dict:
 
 @cached(cache=TTLCache(maxsize=_MAX_NUM_OF_STOCK_INFO, ttl=_TTL_IN_SECONDS))
 async def get_fundamentals(ticker: str) -> dict:
+    """Retrieve the target fundamental metrics for a stock ticker.
+
+    Delegates to the synchornous yfinance helper in a separate thread so the event loop
+    is not blocked. Results are cached with a 24-hour TTL.
+
+    Args:
+        ticker: The stock ticker symbol to look up.
+
+    Returns:
+        dict: A dictionary containing only the keys defined in TARGET_INFO_KEYS, with None
+            for any missing values.
+    """
     fundamental_info = await asyncio.to_thread(_get_fundamentals_helper, ticker)
 
     target_info = {key: fundamental_info.get(key, None) for key in TARGET_INFO_KEYS}
