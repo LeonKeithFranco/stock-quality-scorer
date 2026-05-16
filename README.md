@@ -13,6 +13,14 @@ Both are deployed on Fly.io. Both may take a moment to wake from a stopped state
 
 Retail investors want a quick way to screen stocks for quality without building their own models. This project scrapes current S&P 500 constituents from Wikipedia, pulls fundamentals and price history from Yahoo Finance, trains a calibrated Random Forest classifier on eight financial ratios, and serves predictions through a FastAPI backend. The Streamlit frontend lets you enter any ticker or view predictions for the entire S&P 500. The target variable is binary, whether or not the stock has beat the S&P 500 index, to enable a quick decision.
 
+## Teck stack
+
+- Python 3.12
+- uv
+- FastAPI
+- Streamlit
+- Scikit-learn
+
 ## Architecture
 
 The project is split into three workspace members:
