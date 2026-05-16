@@ -25,11 +25,11 @@ _TARGET_KEYS = [
 
 
 def main():
-    """Fetch fundamental metrics for all S&P 500 constituents fand save to parquet.
+    """Fetch fundamental metrics for all S&P 500 constituents and save to parquet.
 
-    Iterates over teach ticker from the most recent constituents CSV and retrieves its
+    Iterates over each ticker from the most recent constituents CSV and retrieves its
     fundamental data from yfinance with exponential backoff on rate-limit errors. Tickers
-    that fail after all retieves are skipped. Skips the download if a file for today
+    that fail after all retries are skipped. Skips the download if a file for today
     already exists.
     """
     today_date_str = get_today_date_as_str()

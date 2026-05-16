@@ -25,7 +25,7 @@ def _get_fundamentals_helper(ticker: str) -> dict:
         ticker: The stock ticker symbol to look up.
 
     Returns:
-        dict: The raw info dictionary return by yfinance.
+        dict: The raw info dictionary returned by yfinance.
 
     Raises:
         DataSourceError: If yfinance raises an unexpected error or all rate-limit retries
@@ -66,7 +66,7 @@ def _get_fundamentals_helper(ticker: str) -> dict:
 async def get_fundamentals(ticker: str) -> dict:
     """Retrieve the target fundamental metrics for a stock ticker.
 
-    Delegates to the synchornous yfinance helper in a separate thread so the event loop
+    Delegates to the synchronous yfinance helper in a separate thread so the event loop
     is not blocked. Results are cached with a 24-hour TTL.
 
     Args:

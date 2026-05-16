@@ -16,8 +16,8 @@ def main():
     parquet.
 
     Downloads prices for each ticker plus the S&P 500 index (^GSPC) using yfinance's bulk
-    download, reshapes the result into a long-formate DataFrame with date, ticker, and
-    lose columns. Skips the download if a file for today already exists.
+    download, reshapes the result into a long-format DataFrame with date, ticker, and
+    close columns. Skips the download if a file for today already exists.
     """
     today_date_str = get_today_date_as_str()
     full_file_name = f"{FILE_BASE_NAME}prices_{today_date_str}.parquet"

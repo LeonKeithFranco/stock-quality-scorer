@@ -13,11 +13,11 @@ async def predict(
     """Return an outperformance prediction for a single stock ticker.
 
     Args:
-        pred_req: The requiest body containing the ticker symbol.
+        pred_req: The request body containing the ticker symbol.
         service: The injected Service instance.
 
     Returns:
-        PredictionResponse: The outperfromance prediction for the ticker.
+        PredictionResponse: The outperformance prediction for the ticker.
     """
     return await service.predict_outperformance(pred_req.ticker)
 

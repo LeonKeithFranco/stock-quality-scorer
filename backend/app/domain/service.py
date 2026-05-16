@@ -16,9 +16,9 @@ from app.domain.schemas import PredictionResponse
 
 
 def _dict_to_df_with_col_expected_order(dict_fundamentals: dict) -> pd.DataFrame:
-    """Convert a fundamentals dictionary to a single-row Dataframe.
+    """Convert a fundamentals dictionary to a single-row DataFrame.
 
-    Ensures columns are order to match TARGET_INFO_KEYS, which is the order the model
+    Ensures columns are ordered to match TARGET_INFO_KEYS, which is the order the model
     expects at prediction time.
 
     Args:
@@ -43,7 +43,7 @@ async def _get_snp_500_ticker_list() -> list[str]:
         list[str]: The ticker symbols of all current S&P 500 constituents.
 
     Raises:
-        DataSourceError: If the wikipedia request failes or the constituents table is not
+        DataSourceError: If the wikipedia request fails or the constituents table is not
             found on the page.
     """
     try:
@@ -81,9 +81,9 @@ class Service:
     """Service layer for predicting stock outperformance against the S&P 500."""
 
     async def predict_outperformance(self, ticker: str) -> PredictionResponse:
-        """Predict whether a single stock will outperfor the S&P 500.
+        """Predict whether a single stock will outperform the S&P 500.
 
-        Fetches the stock's findamental metrics, converts them into the expected DataFrame
+        Fetches the stock's fundamental metrics, converts them into the expected DataFrame
         format, and runs the calibrated model to produce a probability and binary
         predictions.
 
@@ -92,7 +92,7 @@ class Service:
 
         Returns:
             PredictionResponse: The prediction result containing the ticker,
-                outperformance probabiltiy, and predicted class.
+                outperformance probability, and predicted class.
         """
         stock_fundamentals = await get_fundamentals(ticker)
         df_fundamentals = _dict_to_df_with_col_expected_order(stock_fundamentals)

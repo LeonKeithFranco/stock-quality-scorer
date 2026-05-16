@@ -108,8 +108,8 @@ These were chosen because they capture valuation, profitability, leverage, and g
 
 The test suite is split by scope and workspace member:
 
-- **ML data tests** (`ml/tests/test_data.py`): Validate data integrity at each stage of the pipeline - correct number of tickers, expected column names and types, date range coverage for price data, no duplicate entries, no featureless rows in training data, and that the target label contains only 0s and 1
-- **ML model tests** (`ml/tests/test_model.py`): Load the serialized model artifact and verify that predictions produce valid probability pairs that sum to 1.0. that NaN features are handled gracefully, and that incorrect input shapes raise `ValueError` rather than producing silent garbage
+- **ML data tests** (`ml/tests/test_data.py`): Validate data integrity at each stage of the pipeline - correct number of tickers, expected column names and types, date range coverage for price data, no duplicate entries, no featureless rows in training data, and that the target label contains only 0s and 1s
+- **ML model tests** (`ml/tests/test_model.py`): Load the serialized model artifact and verify that predictions produce valid probability pairs that sum to 1.0, that NaN features are handled gracefully, and that incorrect input shapes raise `ValueError` rather than producing silent garbage
 - **Backend unit tests** (`backend/tests/unit/`): Verify that the fundamentals-to-Dataframe conversion preserves the column order the model expects
 - **Backend integration tests** (`backend/tests/integration/`): API endpoints via FastAPI's `TestClient`. Yahoo finance is mocked at the `yf.Ticker` boundary. Tests verify the happy path (valid prediction), missing ticker (404), rate-limit exhaustion (503), and invalid request body (422)
 
@@ -125,10 +125,10 @@ This is a portfolio project and the model has real statistical limitations that 
 
 - **Survivorship bias:** The training set is today's S&P 500 constituents. Companies that were in the index but got removed (due to poor performance, acquisition, etc.) are excluded. This biases the dataset towards survivors and likely inflates apparent model performance
 - **Single cross-section, no temporal validation:** The model trains on one snapshot of fundamentals and one window of returns. There's no walk-forward or time-series split to test whether the signal generalized across market regimes. A model trained during a bull market may not work in a downturn
-- **Current fundamentals only:** Features are point-in-time ratios. The model has no sense of trajectory; it can't distinguish "margins improving from 10% to 20%" from "margins declining from 30% to 20%", both looks like 20% to the model
+- **Current fundamentals only:** Features are point-in-time ratios. The model has no sense of trajectory; it can't distinguish "margins improving from 10% to 20%" from "margins declining from 30% to 20%", both look like 20% to the model
 - **Small dataset:** ~500 samples is thin for machine learning. With 8 features and 5-fold CV, overfitting is a genuine concern. The calibration step helps, but a larger universe of stocks would give more confidence
 - **No features importance analysis:** The model is a black box. There's no SHAP or permutation importance to explain which ratios are driving predictions for a given stock
-- **Single data source:** Yahoo Finance is the only source for fundamentals and so if it is not available or if `yfinance` breaks, the entire pipeline stops
+- **Single data source:** Yahoo Finance is the only source for fundamentals and if it is not available or if `yfinance` breaks, the entire pipeline stops
 
 ## Things to include in a v2
 

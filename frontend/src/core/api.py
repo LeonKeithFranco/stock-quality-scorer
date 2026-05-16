@@ -33,7 +33,7 @@ class PredictionResponse:
 
 
 class APIClient:
-    """HTTP client for communiocating with the FastAPI backend.
+    """HTTP client for communicating with the FastAPI backend.
 
     Wraps an httpx.Client configured with the backend's base URL and timeout. Intended to
     be used as a context manager so the underlying connection is properly closed after
@@ -47,7 +47,7 @@ class APIClient:
         """Initialize the client with an optional timeout.
 
         Args:
-            timeout: Request timeout in seconds. Defaults tothe value from settings if not
+            timeout: Request timeout in seconds. Defaults to the value from settings if not
                 provided.
         """
         self.client = httpx.Client(
@@ -63,7 +63,7 @@ class APIClient:
         """Fetch an outperformance prediction for a single ticker from the backend.
 
         Args:
-            ticker: The stocker ticker symbol to predict for.
+            ticker: The stock ticker symbol to predict for.
 
         Returns:
             PredictionResponse: The parsed prediction result from the backend.
@@ -89,7 +89,7 @@ class APIClient:
         """Enter the context manager.
 
         Returns:
-            APIClient: The APIClient isntance itself.
+            APIClient: The APIClient instance itself.
         """
         return self
 

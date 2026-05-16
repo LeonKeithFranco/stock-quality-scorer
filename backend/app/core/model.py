@@ -26,7 +26,7 @@ def _custom_df_hash(df: pd.DataFrame) -> str:
 
 @cached(cache=LRUCache(maxsize=1))
 def get_model() -> CalibratedClassifierCV:
-    """Load and return the caches calibrated random forest model.
+    """Load and return the cached calibrated random forest model.
 
     Returns:
         CalibratedClassifierCV: The pre-trained calibrated classifier loaded from disk.

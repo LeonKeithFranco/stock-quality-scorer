@@ -26,9 +26,9 @@ class _Settings(BaseSettings):
 
 @cached(cache=LRUCache(maxsize=1))
 def get_settings() -> _Settings:
-    """Return the caches application settings singleton.
+    """Return the cached application settings singleton.
 
     Returns:
-        _Settings: the bacned settings instance.
+        _Settings: the backend settings instance.
     """
     return _Settings()  # ty: ignore[missing-argument]

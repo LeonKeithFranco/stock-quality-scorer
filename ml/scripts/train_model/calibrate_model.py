@@ -14,10 +14,10 @@ from scripts.utils import get_training_data_path
 
 
 def _build_pipeline() -> Pipeline:
-    """Build a scikit-learn pipeline with imputation, scaling, and a Random forest.
+    """Build a scikit-learn pipeline with imputation, scaling, and a Random Forest.
 
     Returns:
-        Pipeline: An unfitted pipline ready for training.
+        Pipeline: An unfitted pipeline ready for training.
     """
     model = RandomForestClassifier()
 
@@ -31,7 +31,7 @@ def _build_pipeline() -> Pipeline:
 
 
 def _print_results(results: tuple[np.ndarray, np.ndarray], title: str) -> None:
-    """Print a calibration curve summary as a fromatted table.
+    """Print a calibration curve summary as a formatted table.
 
     Args:
         results: A tuple of (fraction of positives, mean predicted values) as returned by
@@ -58,7 +58,7 @@ def main():
     """Train a calibrated Random Forest and export it for serving.
 
     Fits both a raw and a sigmoid-calibrated Random Forest pipeline on the training
-    dataset, prints calibration curve compaisons for each, and serialized the calibrated
+    dataset, prints calibration curve comparisons for each, and serializes the calibrated
     model to the backend's data directory.
     """
     df = pd.read_parquet(get_training_data_path())

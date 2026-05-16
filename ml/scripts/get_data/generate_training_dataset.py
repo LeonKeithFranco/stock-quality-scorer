@@ -34,7 +34,7 @@ def _get_annual_rate_of_return(df_prices: pd.DataFrame) -> float | None:
 def main():
     """Generate the training dataset by labelling stocks against the S&P 500.
 
-    Loads the price history and fundamentals parquests, computes each ticker's trailing
+    Loads the price history and fundamentals parquets, computes each ticker's trailing
     annual return, and labels it 1 if it beat the S&P 500 index or 0 otherwise. Rows with
     insufficient price data are dropped. The result is saved as training_dataset.parquet.
     """

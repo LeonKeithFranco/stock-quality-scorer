@@ -6,7 +6,7 @@ from scripts.get_data.get_snp_500 import main as get_snp_500
 
 
 async def _price_and_fundamentals_async_runner():
-    """Run the price history and fundamentals download concurretly.
+    """Run the price history and fundamentals download concurrently.
 
     Delegates each download to a separate thread so they execute in parallel without
     blocking the event loop.
@@ -17,10 +17,10 @@ async def _price_and_fundamentals_async_runner():
 
 
 def main():
-    """Orchestrate the full data retrievval pipeline.
+    """Orchestrate the full data retrieval pipeline.
 
     First fetches the S&P 500 constituents list, then downloads price histories and
-    fundamentals metrics concurrently.
+    fundamental metrics concurrently.
     """
     print("Retrieving S&P 500 constituents...")
     get_snp_500()

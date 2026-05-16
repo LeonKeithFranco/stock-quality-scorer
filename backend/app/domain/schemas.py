@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field
 
 
 class StockBase(BaseModel):
-    """Base schema for stock-related requests and response.
+    """Base schema for stock-related requests and responses.
 
     Attributes:
         ticker: The stock's exchange ticker symbol.
@@ -25,7 +25,7 @@ class PredictionResponse(StockBase):
     Attributes:
         outperformance_probability: The predicted probability that the stock will
             outperform the S&P 500, between 0.0 and 1.0.
-        predicted_class: Binary label where 1 indicates predict outperformance and 0
+        predicted_class: Binary label where 1 indicates predicted outperformance and 0
             indicates otherwise.
     """
 

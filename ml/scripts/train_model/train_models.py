@@ -40,7 +40,7 @@ def _cross_val_score_runner(
 
 
 def main():
-    """compare classifiers on the training dataset and print fold scores.
+    """Compare classifiers on the training dataset and print fold scores.
 
     Evaluates Logistic Regression, Random Forest, and Gradient Boosting using stratified
     5-fold cross-validation with ROC AUC scoring. Prints per-fold scores and summary

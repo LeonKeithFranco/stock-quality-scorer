@@ -26,9 +26,9 @@ def _get_most_recent_file(
     folder: Path,
     err_msg: str = "There are no files in the directory.",
 ) -> Path:
-    """Return the most recent file in a folder matching a glob patter.
+    """Return the most recent file in a folder matching a glob pattern.
 
-    Files are sorted lexicographically (chornologically due to having dates in the file
+    Files are sorted lexicographically (chronologically due to having dates in the file
     names) and the last one (most recent) is returned. If only one file matches, it is
     returned directly.
 
@@ -41,7 +41,7 @@ def _get_most_recent_file(
         Path: The path to the most recent file.
 
     Raises:
-        FileNotFoundError: If no files match the flow pattern.
+        FileNotFoundError: If no files match the glob pattern.
     """
     files = list(folder.glob(file_name_glob_pattern))
 
@@ -77,13 +77,13 @@ def get_tickers() -> list[str]:
 
 
 def get_prices_path() -> Path:
-    """Return the path to the most recent price hsitory parquet file.
+    """Return the path to the most recent price history parquet file.
 
     Returns:
         Path: The path to the prices parquet.
 
     Raises:
-        FileNotFoundError: If not prices file exists.
+        FileNotFoundError: If no prices file exists.
     """
     return _get_most_recent_file(
         "*prices*.parquet",
@@ -93,7 +93,7 @@ def get_prices_path() -> Path:
 
 
 def get_fundamentals_path() -> Path:
-    """Return to the path to the most recent fundamentals parquet file.
+    """Return the path to the most recent fundamentals parquet file.
 
     Returns:
         Path: The path to the fundamentals parquet.
@@ -115,7 +115,7 @@ def get_training_data_path() -> Path:
         Path: The path to the training dataset parquet.
 
     Raises:
-        FileNotFoundError: If the training dataset parquest does not exist.
+        FileNotFoundError: If the training dataset parquet does not exist.
     """
     training_data_path = PARQUET_FOLDER_PATH / "training_dataset.parquet"
 

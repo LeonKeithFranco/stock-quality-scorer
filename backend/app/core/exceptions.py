@@ -1,5 +1,5 @@
 class StockMissingError(Exception):
-    """The requested ticker symbol does not exist in yfinance.."""
+    """The requested ticker symbol does not exist in yfinance."""
 
     def __init__(self, ticker: str):
         """Initialize the error with the missing ticker symbol.
@@ -20,7 +20,7 @@ class DataSourceError(Exception):
 
         Args:
             source: The name of the data source that failed (e.g. "yfinance").
-            details: A human-readable description of what went wring.
+            details: A human-readable description of what went wrong.
         """
         self.source: str = source
         self.details: str = details
