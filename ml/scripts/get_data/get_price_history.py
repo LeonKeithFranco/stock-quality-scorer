@@ -12,6 +12,13 @@ from scripts.utils import (
 
 
 def main():
+    """Download 5-year closing price history for all S&P 500 constituents and save the
+    parquet.
+
+    Downloads prices for each ticker plus the S&P 500 index (^GSPC) using yfinance's bulk
+    download, reshapes the result into a long-formate DataFrame with date, ticker, and
+    lose columns. Skips the download if a file for today already exists.
+    """
     today_date_str = get_today_date_as_str()
     full_file_name = f"{FILE_BASE_NAME}prices_{today_date_str}.parquet"
     file_path = PARQUET_FOLDER_PATH / full_file_name
