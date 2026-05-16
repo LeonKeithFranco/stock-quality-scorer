@@ -6,6 +6,19 @@ from scripts.utils import PARQUET_FOLDER_PATH, get_fundamentals_path, get_prices
 
 
 def _get_annual_rate_of_return(df_prices: pd.DataFrame) -> float | None:
+    """Calculate the trailing one-year rate of return from a price DataFrame.
+
+    Compares the most recent closing price to the closing price on or before the same date
+    one year prior.
+
+    Args:
+        df_prices: A DataFrame with "date" and "close" columns, sorted by date in
+            ascending order.
+
+    Returns:
+        float: The annual rate of return as a decimal, or None if there is insufficient
+            price history.
+    """
     try:
         df_most_recent = df_prices.iloc[-1]
         current_price = df_most_recent["close"]
@@ -19,6 +32,12 @@ def _get_annual_rate_of_return(df_prices: pd.DataFrame) -> float | None:
 
 
 def main():
+    """Generate the training dataset by labelling stocks against the S&P 500.
+
+    Loads the price history and fundamentals parquests, computes each ticker's trailing
+    annual return, and labels it 1 if it beat the S&P 500 index or 0 otherwise. Rows with
+    insufficient price data are dropped. The result is saved as training_dataset.parquet.
+    """
     df_prices = pd.read_parquet(get_prices_path()).sort_values("date")
 
     df_snp_500_prices = df_prices[df_prices["ticker"] == "^GSPC"]
