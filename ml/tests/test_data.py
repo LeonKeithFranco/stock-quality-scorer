@@ -12,26 +12,33 @@ from scripts.utils import (
 
 @pytest.fixture(scope="session")
 def tickers() -> list[str]:
+    """Load the S&P 500 ticker list from the most recent constituents CSV."""
     return get_tickers()
 
 
 @pytest.fixture(scope="session")
 def fundamentals() -> pd.DataFrame:
+    """Load the most recent fundamentals parquet into a DataFrame."""
     return pd.read_parquet(get_fundamentals_path())
 
 
 @pytest.fixture(scope="session")
 def prices() -> pd.DataFrame:
+    """Load the most recent price history parquet into a DataFrame."""
     return pd.read_parquet(get_prices_path())
 
 
 @pytest.fixture(scope="session")
 def training_data() -> pd.DataFrame:
+    """Load the training dataset parquet into a DataFrame."""
     return pd.read_parquet(get_training_data_path())
 
 
 class TestSNP500CSV:
+    """Validation tests for the S&P 500 constituents CSV."""
+
     def test_correct_amount_of_tickers(self, tickers: list[str]) -> None:
+        """Verify the CSV contains at least 500 ticker symbols."""
         # companies can have multiple classes of stocks, hence why it's possible to have
         # more than 500 in the S&P 500
         min_amount = 500
@@ -40,12 +47,16 @@ class TestSNP500CSV:
 
 
 class TestSNP500FundamentalsParquet:
+    """Validation tests for the fundamentals parquet file."""
+
     def test_expected_tickers(
         self, fundamentals: pd.DataFrame, tickers: list[str]
     ) -> None:
+        """Verify the fundamentals contain exactly the tickers from the CSV."""
         assert set(fundamentals["ticker"]) == set(tickers)
 
     def test_expected_column_names(self, fundamentals: pd.DataFrame) -> None:
+        """Verify the fundamentals DataFrame has the expected column names."""
         expected_column_names = {
             "ticker",
             "trailingPE",
@@ -61,6 +72,7 @@ class TestSNP500FundamentalsParquet:
         assert set(fundamentals.columns) == expected_column_names
 
     def test_expected_column_types(self, fundamentals: pd.DataFrame) -> None:
+        """Verify all metric columns are float dtype."""
         expected_numerical_columns = {
             "trailingPE",
             "priceToBook",
@@ -77,10 +89,14 @@ class TestSNP500FundamentalsParquet:
 
 
 class TestSNP500PricesParquet:
+    """Validation tests for the price history parquet file."""
+
     def test_expected_tickers(self, prices: pd.DataFrame, tickers: list[str]) -> None:
+        """Verify the prices contain all constituent tickers plus the S&P 500 index."""
         assert set(prices["ticker"]) == set(tickers + ["^GSPC"])
 
     def test_expected_column_names(self, prices: pd.DataFrame) -> None:
+        """Verify the prices DataFrame has date, ticker, and close columns."""
         expected_column_names = {
             "date",
             "ticker",
@@ -90,6 +106,7 @@ class TestSNP500PricesParquet:
         assert set(prices.columns) == expected_column_names
 
     def test_date_range(self, prices: pd.DataFrame) -> None:
+        """Verify the price history spans at least 4 years."""
         expected_year_diff_min = 4
 
         min_date = prices["date"].min()
@@ -99,6 +116,7 @@ class TestSNP500PricesParquet:
         assert date_diff.years >= expected_year_diff_min
 
     def test_no_duplicate_date_ticker_entries(self, prices: pd.DataFrame) -> None:
+        """Verify there are no duplicate date-ticker pairs."""
         dates = prices["date"]
         tickers = prices["ticker"]
         date_ticker_entries = set(zip(dates, tickers))
@@ -107,20 +125,25 @@ class TestSNP500PricesParquet:
 
 
 class TestTrainingDataset:
+    """Validation tests for the generated training dataset."""
+
     def test_at_most_same_length_as_fundamental(
         self, training_data: pd.DataFrame, fundamentals: pd.DataFrame
     ) -> None:
+        """Verify the training set is no larger than the fundamentals set."""
         assert len(training_data) <= len(fundamentals)
 
     def test_training_data_tickers_is_subset_of_fundamentals(
         self, training_data: pd.DataFrame, fundamentals: pd.DataFrame
     ) -> None:
+        """Verify all training tickers exist in the fundamentals set."""
         training_tickers = set(training_data["ticker"])
         fundamental_tickers = set(fundamentals["ticker"])
 
         assert training_tickers.issubset(fundamental_tickers)
 
     def test_beat_snp_500_col(self, training_data: pd.DataFrame) -> None:
+        """Verify the beatSnp500 column is integer-typed with only 0 and 1 values."""
         col = training_data["beatSnp500"]
 
         col_values = set(col)
@@ -130,6 +153,7 @@ class TestTrainingDataset:
         assert col_values.issubset(expected_col_values)
 
     def test_cols_for_nan(self, training_data: pd.DataFrame) -> None:
+        """Verify the ticker and beatSnp500 columns contain no NaN values."""
         nans = training_data.isna().sum()
 
         # only these columns never have any nan values
@@ -137,6 +161,7 @@ class TestTrainingDataset:
         assert nans["beatSnp500"] == 0
 
     def test_no_featureless_rows(self, training_data: pd.DataFrame) -> None:
+        """Verify no rows have all feature columns as NaN."""
         # only 2 non-nan columns should be exist, 'ticker' and 'beatSnp500'
         mask = training_data.notna().sum(axis=1) == 2
 
