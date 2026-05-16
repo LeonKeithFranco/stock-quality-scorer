@@ -16,6 +16,17 @@ from app.domain.schemas import PredictionResponse
 
 
 def _dict_to_df_with_col_expected_order(dict_fundamentals: dict) -> pd.DataFrame:
+    """Convert a fundamentals dictionary to a single-row Dataframe.
+
+    Ensures columns are order to match TARGET_INFO_KEYS, which is the order the model
+    expects at prediction time.
+
+    Args:
+        dict_fundamentals: A dictionary of fundamental metric values.
+
+    Returns:
+        pd.DataFrame: A single-row DataFrame with columns in the expected order.
+    """
     df_fundamentals = pd.DataFrame([dict_fundamentals])
 
     return df_fundamentals[TARGET_INFO_KEYS]
@@ -23,6 +34,18 @@ def _dict_to_df_with_col_expected_order(dict_fundamentals: dict) -> pd.DataFrame
 
 @cached(cache=TTLCache(maxsize=1, ttl=86_400))
 async def _get_snp_500_ticker_list() -> list[str]:
+    """Scrape the current list of S&P 500 ticker symbols from Wikipedia.
+
+    Fetches the S&P 500 constituents table and extracts the ticker symbol from each row.
+    Results are cached with a 24-hour TTL.
+
+    Returns:
+        list[str]: The ticker symbols of all current S&P 500 constituents.
+
+    Raises:
+        DataSourceError: If the wikipedia request failes or the constituents table is not
+            found on the page.
+    """
     try:
         async with httpx.AsyncClient() as client:
             response = await client.get(
@@ -55,7 +78,22 @@ async def _get_snp_500_ticker_list() -> list[str]:
 
 
 class Service:
+    """Service layer for predicting stock outperformance against the S&P 500."""
+
     async def predict_outperformance(self, ticker: str) -> PredictionResponse:
+        """Predict whether a single stock will outperfor the S&P 500.
+
+        Fetches the stock's findamental metrics, converts them into the expected DataFrame
+        format, and runs the calibrated model to produce a probability and binary
+        predictions.
+
+        Args:
+            ticker: The stock ticker symbol to predict for.
+
+        Returns:
+            PredictionResponse: The prediction result containing the ticker,
+                outperformance probabiltiy, and predicted class.
+        """
         stock_fundamentals = await get_fundamentals(ticker)
         df_fundamentals = _dict_to_df_with_col_expected_order(stock_fundamentals)
         predicted_outperform = predict(df_fundamentals)
@@ -67,6 +105,15 @@ class Service:
         )
 
     async def predict_outperformance_of_snp_500(self) -> list[PredictionResponse]:
+        """Predict outperformance for all current S&P 500 constituents.
+
+        Fetches the S&P 500 ticker list and runs predictions concurrently. Individual
+        ticker failures are silently dropped from the results.
+
+        Returns:
+            list[PredictionResponse]: Prediction results for each ticker that completed
+                successfully.
+        """
         tickers = await _get_snp_500_ticker_list()
 
         results = await asyncio.gather(
