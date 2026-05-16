@@ -13,7 +13,7 @@ Both are deployed on Fly.io. Both may take a moment to wake from a stopped state
 
 Retail investors want a quick way to screen stocks for quality without building their own models. This project scrapes current S&P 500 constituents from Wikipedia, pulls fundamentals and price history from Yahoo Finance, trains a calibrated Random Forest classifier on eight financial ratios, and serves predictions through a FastAPI backend. The Streamlit frontend lets you enter any ticker or view predictions for the entire S&P 500. The target variable is binary, whether or not the stock has beat the S&P 500 index, to enable a quick decision.
 
-## Teck stack
+## Tech stack
 
 - Python 3.12
 - uv
@@ -149,7 +149,7 @@ This is a portfolio project and the model has real statistical limitations that 
 
 ### Calibration is not optional for probability-based UIs
 
-Showing users a "72% change of outperformance" is a strong claim. If that number is just a Random Forest vote, it's misleading. The calibration step was extra work, but it's the difference between a number that means something and a number that doesn't.
+Showing users a "72% chance of outperformance" is a strong claim. If that number is just a Random Forest vote, it's misleading. The calibration step was extra work, but it's the difference between a number that means something and a number that doesn't.
 
 ### Data pipeline tests pay for themselves immediately
 
@@ -158,7 +158,7 @@ The ML data tests caught silent issues early on:
 - Tickers with empty fundamental rows
 - Duplicate date-ticker entries in price data
 
-Without these those tests, those bugs would have silently surfaced as strange model behaviour.
+Without those tests, those bugs would have silently surfaced as strange model behaviour.
 
 ### Mocking `yfinance` is straightforward once you mock at the right level
 
