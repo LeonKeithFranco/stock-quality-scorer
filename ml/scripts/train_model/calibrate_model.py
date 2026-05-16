@@ -14,6 +14,11 @@ from scripts.utils import get_training_data_path
 
 
 def _build_pipeline() -> Pipeline:
+    """Build a scikit-learn pipeline with imputation, scaling, and a Random forest.
+
+    Returns:
+        Pipeline: An unfitted pipline ready for training.
+    """
     model = RandomForestClassifier()
 
     return Pipeline(
@@ -26,6 +31,13 @@ def _build_pipeline() -> Pipeline:
 
 
 def _print_results(results: tuple[np.ndarray, np.ndarray], title: str) -> None:
+    """Print a calibration curve summary as a fromatted table.
+
+    Args:
+        results: A tuple of (fraction of positives, mean predicted values) as returned by
+            sklearn's calibration_curve.
+        title: The heading to display above the table.
+    """
     df_results = (
         pd.DataFrame(
             {
@@ -43,6 +55,12 @@ def _print_results(results: tuple[np.ndarray, np.ndarray], title: str) -> None:
 
 
 def main():
+    """Train a calibrated Random Forest and export it for serving.
+
+    Fits both a raw and a sigmoid-calibrated Random Forest pipeline on the training
+    dataset, prints calibration curve compaisons for each, and serialized the calibrated
+    model to the backend's data directory.
+    """
     df = pd.read_parquet(get_training_data_path())
 
     X = df.drop(columns=["ticker", "beatSnp500"])
