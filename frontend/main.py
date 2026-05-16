@@ -11,6 +11,14 @@ st.header(get_settings().app_name)
 
 
 def _create_table(predictions: list[PredictionResponse]) -> None:
+    """Render a list of prediction responses as a streamlit table.
+
+    Converts raw predictions into a formatted DataFrame with human-readable column names
+    and percentage formatting, then displays it.
+
+    Args:
+        predictions: The prediction results to display.
+    """
     df_prediction = pd.DataFrame([asdict(prediction) for prediction in predictions])
     df_prediction["outperformance_probability"] = (
         df_prediction["outperformance_probability"] * 100
@@ -32,6 +40,12 @@ def _create_table(predictions: list[PredictionResponse]) -> None:
 
 @st.fragment
 def single_predict():
+    """Render the single-ticker prediction form and display the results.
+
+    Presents a text input for the ticker symbol and a submit button. On submission, calls
+    the backend prediction API and displays the result as a table, or shows an error
+    message on failure.
+    """
     with st.form("ticker_predict_form"):
         ticker = st.text_input("Enter Ticker", placeholder="AAPL, MSFT, KO, etc.")
         submitted = st.form_submit_button("Predict")
