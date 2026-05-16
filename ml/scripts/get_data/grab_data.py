@@ -6,12 +6,22 @@ from scripts.get_data.get_snp_500 import main as get_snp_500
 
 
 async def _price_and_fundamentals_async_runner():
+    """Run the price history and fundamentals download concurretly.
+
+    Delegates each download to a separate thread so they execute in parallel without
+    blocking the event loop.
+    """
     async with asyncio.TaskGroup() as tg:
         tg.create_task(asyncio.to_thread(get_fundamentals))
         tg.create_task(asyncio.to_thread(get_price_history))
 
 
 def main():
+    """Orchestrate the full data retrievval pipeline.
+
+    First fetches the S&P 500 constituents list, then downloads price histories and
+    fundamentals metrics concurrently.
+    """
     print("Retrieving S&P 500 constituents...")
     get_snp_500()
     print("...S&P retrieved.")
