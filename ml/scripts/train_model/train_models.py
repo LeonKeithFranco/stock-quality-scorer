@@ -16,6 +16,19 @@ from scripts.utils import get_training_data_path
 def _cross_val_score_runner(
     model: ClassifierMixin, features: pd.DataFrame, labels: pd.Series
 ) -> np.ndarray:
+    """Run stratified 5-fold cross-validation for a classifier and return ROC AUC scores.
+
+    Wraps the classifier in a pipeline with median imputation and standard scaling before
+    scoring.
+
+    Args:
+        model: The scikit-learn classifier to evaluate.
+        features: The feature matrix.
+        labels: The target labels.
+
+    Returns:
+        np.ndarray: An array of ROC AUC scores, one per fold.
+    """
     imputer = SimpleImputer(strategy="median")
     scaler = StandardScaler()
 
@@ -27,6 +40,12 @@ def _cross_val_score_runner(
 
 
 def main():
+    """compare classifiers on the training dataset and print fold scores.
+
+    Evaluates Logistic Regression, Random Forest, and Gradient Boosting using stratified
+    5-fold cross-validation with ROC AUC scoring. Prints per-fold scores and summary
+    statistics (mean and standard deviation) for each model.
+    """
     df = pd.read_parquet(get_training_data_path())
 
     X = df.drop(columns=["ticker", "beatSnp500"])
