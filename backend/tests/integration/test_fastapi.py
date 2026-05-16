@@ -10,10 +10,12 @@ from yfinance.exceptions import YFRateLimitError
 
 @pytest.fixture
 def client() -> TestClient:
+    """Create a TestClient instance for the FastAPI application."""
     return TestClient(app)
 
 
 def test_api_startup(client: TestClient) -> None:
+    """Verify the health-check endpoint returns 200 OK."""
     response = client.get("/health")
 
     assert response.status_code == status.HTTP_200_OK
@@ -21,11 +23,19 @@ def test_api_startup(client: TestClient) -> None:
 
 
 class TestAPI:
+    """Integration tests for the prediction endpoints.
+
+    Each test mocks yfinance so no real network requests are made. The
+    fundamentals cache is cleared before every test to ensure isolation.
+    """
+
     @pytest.fixture(autouse=True)
     def clear_fundamentals_cache(self) -> None:
+        """Clear the get_fundamentals cache before each test."""
         get_fundamentals.cache.clear()  # ty: ignore[unresolved-attribute]
 
     def test_predict(self, mocker: MockerFixture, client: TestClient) -> None:
+        """Verify a successful single-ticker prediction returns valid probabilities."""
         ticker = "AAPL"
 
         mock_ticker_instance = mocker.MagicMock()
@@ -62,6 +72,7 @@ class TestAPI:
     def test_predict_stock_missing_error(
         self, mocker: MockerFixture, client: TestClient
     ) -> None:
+        """Verify an unknown ticker returns 404 with the expected error message."""
         ticker = "AAPL"
 
         mock_ticker_instance = mocker.MagicMock()
@@ -83,6 +94,7 @@ class TestAPI:
     def test_predict_get_fundamentals_retry(
         self, mocker: MockerFixture, client: TestClient
     ) -> None:
+        """Verify exhausted rate-limit retries surface as 503 Service Unavailable."""
         mocker.patch("app.core.api.time")
 
         ticker = "AAPL"
@@ -103,6 +115,7 @@ class TestAPI:
         }
 
     def test_predict_invalid_post_body(self, client: TestClient) -> None:
+        """Verify an empty ticker string returns 422 with a validation error."""
         ticker = ""
 
         response = client.post("/predict", json={"ticker": ticker})
@@ -121,6 +134,7 @@ class TestAPI:
         }
 
     def test_predict_snp_500(self, mocker: MockerFixture, client: TestClient) -> None:
+        """Verify the S&P 500 batch endpoint returns predictions for all tickers."""
         tickers = {"AAPL", "KO", "MSFT"}
 
         mocker.patch.object(service, "_get_snp_500_ticker_list", return_value=tickers)
