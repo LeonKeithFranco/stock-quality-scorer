@@ -13,4 +13,5 @@ app.include_router(prediction_router)
 
 @app.get("/health")
 async def health_check():
+    """Health-check endpoint."""
     return {"status": "ok"}
