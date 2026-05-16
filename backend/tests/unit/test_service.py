@@ -3,6 +3,7 @@ from app.domain.service import _dict_to_df_with_col_expected_order
 
 
 def test_dict_to_df() -> None:
+    """Verify the DataFrame columns match TARGET_INFO_KEYS in the expected order."""
     fake_fundamental_info = {
         "ticker": "FAKE",
         "trailingPE": 1.0,
