@@ -48,13 +48,17 @@ The project is split into three workspace members:
 1. Clone the repo
 2. Install dependencies: `uv sync --all-packages`
 3. Run the ML pipeline (from `ml/`):
+   - `uv run python -m scripts.get_data.grab_data`
+   - `uv run python -m scripts.get_data.generate_training_dataset`
+   - `uv run python -m scripts.train_model.train_models`
+   - `uv run python -m scripts.train_model.calibrate_model`
 
-- `uv run python -m scripts.get_data.grab_data`
-- `uv run python -m scripts.get_data.generate_training_dataset`
-- `uv run python -m scripts.train_model.train_models`
-- `uv run python -m scripts.train_model.calibrate_model`
+   `grab_data` downloads fresh data, so the resulting model will differ from one trained on the committed May 2026 snapshot. To train on the committed snapshot instead, skip `grab_data` and run the other three commands.
 
-`grab_data` downloads fresh data, so the resulting model will differ from one trained on the committed May 2026 snapshot. To train on the committed snapshot instead, skip `grab_data` and run the other three commands. 4. Create `.env` files in both `frontend` and `backend` then copy the contents of the respective `.env.template` 5. Start the backend (from `backend/`): `uv run fastapi dev app/main.py` 6. In a second terminal, start the frontend (from `frontend/`): `uv run streamlit run main.py` 7. Open the frontend client at http://localhost:8501 and wait for the S&P 500 table to populate or enter a ticker symbol
+4. Create `.env` files in both `frontend` and `backend` then copy the contents of the respective `.env.template`
+5. Start the backend (from `backend/`): `uv run fastapi dev app/main.py`
+6. In a second terminal, start the frontend (from `frontend/`): `uv run streamlit run main.py`
+7. Open the frontend client at http://localhost:8501 and wait for the S&P 500 table to populate or enter a ticker symbol
 
 ### Podman compose
 
@@ -68,11 +72,11 @@ This starts both services, however, the model artifact must already exist in `ba
 
 **Request body:** `{ "ticker" : "AAPL" }`
 
-**Response(200):** `ticker` (normalized to upper case), `outperformance_probability` (0.0-1.0, the calibrated model score), and `predicted_class` (1 if `outperformance_probability` > 0.5, else 0)
+**Response(200):** `ticker` (normalized to upper case, with `.` replaced by `-` to match Yahoo Finance, e.g. `brk.b` → `BRK-B`), `outperformance_probability` (0.0-1.0, the calibrated model score), and `predicted_class` (1 if `outperformance_probability` > 0.5, else 0)
 
 ### POST /predict/snp-500
 
-Returns scores for current S&P 500 constituents. Scrapes the latest constituents list from Wikipedia, fetches live fundamentals for each ticker, and returns an array of predictions. Tickers that fail are silently excluded: delisted or rate-limited tickers, and share-class tickers such as `BRK.B` and `BF.B`, whose Wikipedia symbols don't match Yahoo Finance's format (`BRK-B`).
+Returns scores for current S&P 500 constituents. Scrapes the latest constituents list from Wikipedia, fetches live fundamentals for each ticker, and returns an array of predictions. Share-class tickers are converted to Yahoo Finance's format, so Wikipedia's `BRK.B` is returned as `BRK-B`. Tickers that fail (e.g. delisted or rate-limited) are silently excluded.
 
 ### Error responses
 
@@ -81,7 +85,7 @@ Returns scores for current S&P 500 constituents. Scrapes the latest constituents
 - 503: Yahoo Finance or Wikipedia temporarily unavailable
 - 500: unhandled internal error
 
-Error bodies for 404, 503 and 500 use a `details` key; 422 validation errors use FastAPI's standard `detail` key.
+All error bodies use a `detail` key. For 422 errors its value is FastAPI's list of validation errors; for the others it is a message string.
 
 FastAPI generates interactive docs at `/docs`.
 
