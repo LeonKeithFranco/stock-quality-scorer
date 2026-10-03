@@ -52,7 +52,7 @@ class APIClient:
         """
         self.client = httpx.Client(
             base_url=get_settings().api_base_url,
-            timeout=get_settings().api_timeout if timeout is not None else timeout,
+            timeout=timeout if timeout is not None else get_settings().api_timeout,
         )
 
     def close(self) -> None:
