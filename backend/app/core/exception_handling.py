@@ -18,7 +18,7 @@ def attach_exception_handlers(app: FastAPI) -> None:
         return JSONResponse(
             status_code=status.HTTP_404_NOT_FOUND,
             content={
-                "details": f"Stock with ticker symbol '{exc.ticker}' does not exist."
+                "detail": f"Stock with ticker symbol '{exc.ticker}' does not exist."
             },
         )
 
@@ -29,7 +29,7 @@ def attach_exception_handlers(app: FastAPI) -> None:
         return JSONResponse(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             content={
-                "details": f"Source '{exc.source}' is temporarily unavailable. Please try again later."
+                "detail": f"Source '{exc.source}' is temporarily unavailable. Please try again later."
             },
         )
 
@@ -40,6 +40,6 @@ def attach_exception_handlers(app: FastAPI) -> None:
         return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             content={
-                "details": "An internal server error occurred. Please try again later."
+                "detail": "An internal server error occurred. Please try again later."
             },
         )

@@ -88,7 +88,7 @@ class TestAPI:
 
         assert response.status_code == status.HTTP_404_NOT_FOUND
         assert response.json() == {
-            "details": f"Stock with ticker symbol '{ticker}' does not exist."
+            "detail": f"Stock with ticker symbol '{ticker}' does not exist."
         }
 
     def test_predict_get_fundamentals_retry(
@@ -109,7 +109,7 @@ class TestAPI:
 
         assert response.status_code == status.HTTP_503_SERVICE_UNAVAILABLE
         assert response.json() == {
-            "details": (
+            "detail": (
                 "Source 'yfinance' is temporarily unavailable. Please try again later."
             )
         }

@@ -58,7 +58,7 @@ def single_predict():
 
                 _create_table([prediction])
             except httpx.HTTPStatusError as e:
-                st.error(f"Unable to get data: {e.response.json()['details']}")
+                st.error(f"Unable to get data: {e.response.json()['detail']}")
             except Exception as e:
                 st.error(f"Unable to get data: {e}")
         else:
