@@ -4,14 +4,14 @@ import joblib
 import numpy as np
 import pandas as pd
 import pytest
-from scripts.utils import MODELS_FOLDER_PATH, get_training_data_path
+from scripts.utils import MODEL_FILE_PATH, get_training_data_path
 from sklearn.calibration import CalibratedClassifierCV
 
 
 @pytest.fixture(scope="session")
 def model() -> CalibratedClassifierCV:
     """Load the calibrated Random Forest model from disk and verify its type."""
-    model = joblib.load(MODELS_FOLDER_PATH / "rf_calibrated.joblib")
+    model = joblib.load(MODEL_FILE_PATH)
 
     assert isinstance(model, CalibratedClassifierCV)
 

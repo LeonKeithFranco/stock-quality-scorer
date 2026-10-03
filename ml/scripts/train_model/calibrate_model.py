@@ -10,7 +10,7 @@ from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
-from scripts.utils import get_training_data_path
+from scripts.utils import MODEL_FILE_PATH, get_training_data_path
 
 
 def _build_pipeline() -> Pipeline:
@@ -82,14 +82,7 @@ def main():
     print("\n")
     _print_results(calibration_curve(y, calibrated_probs[:, 1]), "Calibrated Results")
 
-    full_file_path = (
-        Path(__file__).parent.parent.parent.parent
-        / "backend"
-        / "data"
-        / "rf_calibrated.joblib"
-    )
-
-    joblib.dump(calibrated_pipeline, full_file_path)
+    joblib.dump(calibrated_pipeline, MODEL_FILE_PATH)
 
 
 if __name__ == "__main__":
