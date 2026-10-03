@@ -94,7 +94,7 @@ class Service:
             PredictionResponse: The prediction result containing the ticker,
                 outperformance probability, and predicted class.
         """
-        ticker = ticker.strip().upper()
+        ticker = ticker.strip().upper().replace(".", "-")
 
         stock_fundamentals = await get_fundamentals(ticker)
         df_fundamentals = _dict_to_df_with_col_expected_order(stock_fundamentals)
