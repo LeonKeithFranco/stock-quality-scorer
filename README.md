@@ -1,6 +1,6 @@
 # Stock Quality Scorer
 
-A machine learning service that scores S&P 500 stocks on how closely their current fundamentals resemble those of stocks that beat the S&P 500 index over the past 12 months. It is served through a FastAPI REST API with a Streamlit dashboard client.
+A machine learning service that estimates, from eight current fundamental ratios, the probability that a stock falls among the S&P 500 constituents that beat the index over the 12 months to the training snapshot (May 2026 for the committed model), rather than among those that didn't. It is served through a FastAPI REST API with a Streamlit dashboard client.
 
 ## Live demo
 
@@ -11,7 +11,7 @@ Both are deployed on Fly.io. Both may take a moment to wake from a stopped state
 
 ## What problem this project solves
 
-Retail investors want a quick way to screen stocks for quality without building their own models. This project scrapes current S&P 500 constituents from Wikipedia, pulls fundamentals and price history from Yahoo Finance, trains a calibrated Random Forest classifier on eight financial ratios, and serves scores through a FastAPI backend. The Streamlit frontend lets you enter any ticker or view scores for the entire S&P 500. The target variable is binary: whether or not the stock beat the S&P 500 index over the trailing 12 months. Because the label and the features come from the same point in time, the score describes which fundamentals are associated with recent outperformance; it is not a forecast of future returns (see [Methodology](#methodology)).
+Retail investors want a quick way to screen stocks for quality without building their own models. This project scrapes current S&P 500 constituents from Wikipedia, pulls fundamentals and price history from Yahoo Finance, trains a calibrated Random Forest classifier on eight financial ratios, and serves scores through a FastAPI backend. The Streamlit frontend lets you enter any ticker or view scores for the entire S&P 500. The target variable is binary: whether or not the stock beat the S&P 500 index over the trailing 12 months as of the training snapshot. In training, the label and the features come from the same point in time, so the score describes which fundamentals are associated with recent outperformance; it is not a forecast of future returns. When the app serves a score, it applies that fixed snapshot model to live fundamentals (see [Methodology](#methodology)).
 
 ## Tech stack
 
@@ -36,7 +36,7 @@ The project is split into three workspace members:
 3. Going to the Streamlit frontend automatically pulls the S&P 500 scores; the user may also enter a ticker
 4. Frontend calls `POST /predict/snp-500` immediately to populate the table; `POST /predict/` when the user requests a score for a specific ticker
 5. Backend fetches live fundamentals from Yahoo Finance, runs them through the loaded model, returns the calibrated score
-6. Frontend displays the score as a percentage and a binary "Predicted to Beat S&P 500" flag (score above 0.5)
+6. Frontend displays the score as a percentage and a binary flag labelled "Predicted to Beat S&P 500" (score above 0.5). Despite the label, the flag is a threshold on the backward-looking score, not a forecast
 
 ## Running locally
 
@@ -74,6 +74,8 @@ This starts both services, however, the model artifact must already exist in `ba
 
 **Response(200):** `ticker` (normalized to upper case, with `.` replaced by `-` to match Yahoo Finance, e.g. `brk.b` → `BRK-B`), `outperformance_probability` (0.0-1.0, the calibrated model score), and `predicted_class` (1 if `outperformance_probability` > 0.5, else 0)
 
+Any ticker Yahoo Finance recognizes is accepted, not only S&P 500 constituents. The model was trained only on S&P 500 constituents, so scores for other stocks are extrapolations. Because every `.` is converted to `-`, tickers that use a Yahoo exchange suffix (e.g. `SHOP.TO`) are not found and return 404. If Yahoo returns the ticker but not some of the eight ratios (as can happen for ETFs and other funds), the missing values are filled with medians learned during training, so a score is still returned.
+
 ### POST /predict/snp-500
 
 Returns scores for current S&P 500 constituents. Scrapes the latest constituents list from Wikipedia, fetches live fundamentals for each ticker, and returns an array of predictions. Share-class tickers are converted to Yahoo Finance's format, so Wikipedia's `BRK.B` is returned as `BRK-B`. Tickers that fail (e.g. delisted or rate-limited) are silently excluded.
@@ -106,7 +108,9 @@ The model is a Random Forest classifier wrapped in `CalibratedClassifierCV` (`me
 
 These were chosen because they capture valuation, profitability, leverage, and growth; these are the four dimensions a fundamental analyst typically screens for. Missing values are imputed with the median and features are standardized. The pipeline is wrapped in scikit-learn `Pipeline` so preprocessing and prediction are a single step.
 
-**Target variable:** Binary. A stock is labeled as `1` if its trailing 12-month return exceeded the S&P 500's trailing 12-month return over the same period, `0` otherwise. The features are fundamentals as of the same date, so the model learns which current ratios are associated with the past year's outperformance. Valuation ratios such as trailing P/E and price-to-book include the current share price, so they partly reflect the same price move the label measures. The score should therefore be read as a description of recent winners, not as a forecast.
+**Target variable:** Binary. A stock is labeled as `1` if its trailing 12-month return, measured up to the snapshot date (May 6, 2026 for the committed data), exceeded the S&P 500's return over the same period, `0` otherwise. The features are fundamentals as of the same date, so the model learns which current ratios are associated with the past year's outperformance. Valuation ratios such as trailing P/E and price-to-book include the current share price, so they partly reflect the same price move the label measures. The score should therefore be read as a description of recent winners, not as a forecast.
+
+The model is frozen at the snapshot. The backend scores live fundamentals against the snapshot's winners and losers, so a served score does not refer to the 12 months before the request. In the committed training set, 169 of 501 stocks (about 34%) are labeled `1`. The 0.5 cutoff for `predicted_class` sits well above that base rate, so most stocks can be expected to fall below it.
 
 **Evaluation:** 5-fold stratified cross-validation scored on ROC AUC. Three model families were compared (Logistic Regression, Random Forest, Gradient Boosting); Random Forest scored highest on the committed May 2026 snapshot (mean AUC about 0.73, versus about 0.70 for Gradient Boosting and 0.66 for Logistic Regression). No random seed is set, so exact scores vary slightly between runs. `calibrate_model.py` prints calibration curves for the raw and calibrated models, but they are computed on the same data the models were trained on, so they show in-sample fit rather than verifying out-of-sample calibration.
 
@@ -135,6 +139,7 @@ This is a portfolio project and the model has real statistical limitations that 
 - **Survivorship bias:** The training set is today's S&P 500 constituents. Companies that were in the index but got removed (due to poor performance, acquisition, etc.) are excluded. This biases the dataset towards survivors and likely inflates apparent model performance
 - **Backward-looking label, no temporal validation:** The model trains on one snapshot of current fundamentals, labeled with the trailing 12-month return over the period those fundamentals already reflect. It has not been tested on whether today's ratios predict the _next_ 12 months, and there's no walk-forward or time-series split to test whether the signal holds across market regimes. A model trained during a bull market may not work in a downturn
 - **Current fundamentals only:** Features are point-in-time ratios. The model has no sense of trajectory; it can't distinguish "margins improving from 10% to 20%" from "margins declining from 30% to 20%", both look like 20% to the model
+- **Share classes excluded from training:** The training pipeline doesn't convert Wikipedia's `.` share-class tickers to Yahoo's `-` format, so `BRK.B` and `BF.B` returned no fundamentals and were dropped from the training set. The backend does convert them, so it serves scores for stocks the model never saw
 - **Small dataset:** ~500 samples is thin for machine learning. With 8 features and 5-fold CV, overfitting is a genuine concern, and a larger universe of stocks would give more confidence
 - **No feature importance analysis:** The model is a black box. There's no SHAP or permutation importance to explain which ratios are driving predictions for a given stock
 - **Single data source:** Yahoo Finance is the only source for fundamentals and if it is not available or if `yfinance` breaks, the entire pipeline stops
